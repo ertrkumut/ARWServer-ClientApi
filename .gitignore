@@ -1,2 +1,7 @@
 .DS_Store
-.sln
+*.sln
+*.userprefs
+ARWServer_UnityApi/ARWServer_UnityApi.csproj
+ARWServer_UnityApi/bin
+ARWServer_UnityApi/obj
+ARWServer_UnityApi/Properties
