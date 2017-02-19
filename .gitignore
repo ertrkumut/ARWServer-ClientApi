@@ -6,3 +6,4 @@ ARWServer_UnityApi/bin
 ARWServer_UnityApi/obj
 ARWServer_UnityApi/Properties
 *.sublime-project
+*.exe
