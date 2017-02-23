@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Net;
+using System.Threading;
 
 #pragma warning disable 0168 // variable declared but not used.
 #pragma warning disable 0219 // variable assigned but not used.
@@ -43,9 +44,28 @@ namespace ARWServer
 		}
 
 		public void ProcessEvents(){
-			IPAddress ipAddrss;
-			while (1) {
+			IPAddress ipAddrss = IPAddress.Parse (this.host);
+			listener = new TcpListener (ipAddrss, this.tcpPort);
+
+			listener.Start ();
+
+			while (true) {
+				try{
+					ThreadStart threadFunc = new ThreadStart (delegate() {
+						byte[] readBytes = new byte[this.client.ReceiveBufferSize];
+						this.ns.Read(readBytes,0,readBytes.Length);
+						var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
+						ARWObject newObj = ARWObject.ExtractARWObject(readBytes);
+
+						if(newObj.GetRequestName() == "ConnectionSuccess"){
+							ARWEvents.CONNECTION.handler(newObj);
+						}
+					});
+					Thread childSocketThreat = new Thread (threadFunc);
+					childSocketThreat.Start ();
+				}catch(System.ObjectDisposedException){
 				
+				}
 			}
 		}
 
@@ -65,6 +85,10 @@ namespace ARWServer
 		public void AddEventHandler(ARWEvent evnt, EventHandler handler){
 			evnt.handler += handler;
 		}
+
+		#region PrivateHandlers
+
+		#endregion
 	}
 
 	class Program{
@@ -76,15 +100,17 @@ namespace ARWServer
 			ARWEvents.Init ();
 
 			Console.WriteLine("================================");
-			arwServer.host = "localhost";
+			arwServer.host = "127.0.0.1";
 			arwServer.tcpPort = 8081;
 
 			arwServer.AddEventHandler (ARWEvents.CONNECTION, Deneme);
 			arwServer.Connect();
+
+			arwServer.ProcessEvents ();
 		}
 
-		public static void Deneme(){
-			Console.WriteLine ("Test");
+		public static void Deneme(ARWObject evntObj){
+			Console.WriteLine ("Connection Success");
 		}
 	}
 }

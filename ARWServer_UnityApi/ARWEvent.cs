@@ -3,7 +3,7 @@
 namespace ARWServer
 {
 
-	public delegate void EventHandler();
+	public delegate void EventHandler(ARWObject evntObj);
 
 	public class ARWEvent
 	{

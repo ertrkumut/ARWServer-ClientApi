@@ -26,6 +26,9 @@ namespace ARWServer
 			this.requestName = reqName;
 		}
 
+		public string GetRequestName(){
+			return this.requestName;
+		}
 		public void PutString(string key, string value){
 			dataList.Add (key, value);	
 		}
@@ -40,6 +43,22 @@ namespace ARWServer
 			}
 
 			return string.Empty;
+		}
+
+		public static ARWObject ExtractARWObject(byte[] bytes){
+			string data = System.Text.Encoding.UTF8.GetString (bytes).Replace("\0", null).Replace("\"",null);
+
+			ARWObject newObj = new ARWObject ();
+			string[] dataParts = data.Split ('.');
+			newObj.requestName = dataParts [0];
+
+			string[] prms = dataParts [1].Split ('_');
+			foreach (string p in prms) {
+				string[] paramParts = p.Split ('#');
+				if (paramParts.Length == 2)
+					newObj.dataList.Add (paramParts [0], paramParts [1]);
+			}
+			return newObj;
 		}
 
 		public byte[] CompressARWObject(){
