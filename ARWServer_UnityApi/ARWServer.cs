@@ -16,8 +16,17 @@ namespace ARWServer
 		public int tcpPort;
 		public int udpPort;
 
-		TcpClient client;
-		NetworkStream ns{
+		public bool isConnected{
+			get{ 
+				if (this.client == null)
+					return false;
+
+				return this.client.Connected;
+			}
+		}
+
+		private TcpClient client;
+		private NetworkStream ns{
 			get{
 				if (client != null)
 					return client.GetStream ();
@@ -25,7 +34,7 @@ namespace ARWServer
 			}
 		}
 
-		TcpListener listener;
+		private TcpListener listener;
 
 		public void Connect(){
 			client = new TcpClient();
@@ -40,7 +49,10 @@ namespace ARWServer
 			ARWObject newObj = new ARWObject ();
 			newObj.SetRequestName ("ConnectionSuccess");
 			SendReqeust (newObj);
+		}
 
+		public void Init(){
+			ARWEvents.Init ();
 		}
 
 		public void ProcessEvents(){
@@ -52,34 +64,54 @@ namespace ARWServer
 			while (true) {
 				try{
 					ThreadStart threadFunc = new ThreadStart (delegate() {
-						byte[] readBytes = new byte[this.client.ReceiveBufferSize];
-						this.ns.Read(readBytes,0,readBytes.Length);
-						var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
-						ARWObject newObj = ARWObject.ExtractARWObject(readBytes);
+						try{
+							byte[] readBytes = new byte[this.client.ReceiveBufferSize];
+							this.ns.Read(readBytes,0,readBytes.Length);
+							var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
+							ARWObject newObj = ARWObject.Extract(readBytes);
 
-						if(newObj.GetRequestName() == "ConnectionSuccess"){
-							ARWEvents.CONNECTION.handler(newObj);
+							if(newObj.GetRequestName() == "ConnectionSuccess"){
+								if(ARWEvents.CONNECTION.handler == null)
+									return;
+								
+								ARWEvents.CONNECTION.handler(newObj);
+							}
+						}catch(System.ObjectDisposedException e){
+								
+						}catch(System.IO.IOException a){
+							
 						}
 					});
 					Thread childSocketThreat = new Thread (threadFunc);
 					childSocketThreat.Start ();
 				}catch(System.ObjectDisposedException){
-				
+					Console.WriteLine ("Object Disposed Exception");
 				}
 			}
+		}
+
+		public void SendLoginRequest(string userName, ARWObject arwObject){
+			ThreadStart threadFunc = new ThreadStart(delegate() {
+				ARWObject loginObj = arwObject;
+				if (loginObj == null)
+					loginObj = new ARWObject ();
+
+				loginObj.SetRequestName ("LoginEvent");
+				loginObj.specialParam.PutVariable ("username", "umut");
+
+				SendReqeust(loginObj);
+				Console.WriteLine ("Login Request Send");
+			});
+			Thread loginThread = new Thread (threadFunc);
+			loginThread.Start ();
 		}
 
 		public void SendReqeust(ARWObject arwObject){
 			if (arwObject == null)
 				return;
 
-			byte[] bytesToSend = arwObject.CompressARWObject ();
+			byte[] bytesToSend = arwObject.Compress ();
 			client.Client.Send (bytesToSend);
-		}
-
-		public void SendLoginRequest(string username, string password, ARWObject arwObject = null){
-			if (arwObject == null)
-				arwObject = new ARWObject ();
 		}
 
 		public void AddEventHandler(ARWEvent evnt, EventHandler handler){
@@ -97,11 +129,12 @@ namespace ARWServer
 
 		public static void Main(){
 			arwServer = new ARWServer();
-			ARWEvents.Init ();
 
 			Console.WriteLine("================================");
 			arwServer.host = "127.0.0.1";
 			arwServer.tcpPort = 8081;
+
+			arwServer.Init ();
 
 			arwServer.AddEventHandler (ARWEvents.CONNECTION, Deneme);
 			arwServer.Connect();
@@ -111,6 +144,7 @@ namespace ARWServer
 
 		public static void Deneme(ARWObject evntObj){
 			Console.WriteLine ("Connection Success");
+			arwServer.SendLoginRequest ("umut", null);
 		}
 	}
 }

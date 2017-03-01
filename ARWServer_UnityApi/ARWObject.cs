@@ -10,16 +10,16 @@ namespace ARWServer
 {
 	public class ARWObject
 	{
-		private string requestName 	= String.Empty;
-		private string param 		= String.Empty;
+		private string 						requestName;
+		public SpecialEventParam 			specialParam;
 
 		private IDictionary<string, object> dataList;
 
 
 		public ARWObject(){
-			dataList = new Dictionary<string, object> ();
-			requestName = String.Empty;
-			param = String.Empty;
+			dataList 		= new Dictionary<string, object> ();
+			requestName 	= String.Empty;
+			specialParam 	= new SpecialEventParam ();
 		}
 
 		public void SetRequestName(string reqName){
@@ -45,7 +45,7 @@ namespace ARWServer
 			return string.Empty;
 		}
 
-		public static ARWObject ExtractARWObject(byte[] bytes){
+		public static ARWObject Extract(byte[] bytes){
 			string data = System.Text.Encoding.UTF8.GetString (bytes).Replace("\0", null).Replace("\"",null);
 
 			ARWObject newObj = new ARWObject ();
@@ -61,7 +61,7 @@ namespace ARWServer
 			return newObj;
 		}
 
-		public byte[] CompressARWObject(){
+		public byte[] Compress(){
 			string data = String.Empty;
 
 			data += this.requestName + ".";
@@ -70,7 +70,9 @@ namespace ARWServer
 			}
 			data = data.TrimEnd ('_');
 
-			byte[] bytes = System.Text.Encoding.ASCII.GetBytes (data);
+			data += "." + specialParam.Compress ();
+
+			byte[] bytes = System.Text.Encoding.UTF8.GetBytes (data);
 			return bytes;
 		}
 	}
