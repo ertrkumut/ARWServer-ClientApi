@@ -97,10 +97,9 @@ namespace ARWServer
 					loginObj = new ARWObject ();
 
 				loginObj.SetRequestName ("LoginEvent");
-				loginObj.specialParam.PutVariable ("username", "umut");
+				loginObj.specialParam.PutVariable ("userName", "umut");
 
 				SendReqeust(loginObj);
-				Console.WriteLine ("Login Request Send");
 			});
 			Thread loginThread = new Thread (threadFunc);
 			loginThread.Start ();
@@ -112,6 +111,7 @@ namespace ARWServer
 
 			byte[] bytesToSend = arwObject.Compress ();
 			client.Client.Send (bytesToSend);
+			Console.WriteLine (arwObject.GetRequestName() + " Send");
 		}
 
 		public void AddEventHandler(ARWEvent evnt, EventHandler handler){
@@ -121,30 +121,5 @@ namespace ARWServer
 		#region PrivateHandlers
 
 		#endregion
-	}
-
-	class Program{
-
-		public static ARWServer arwServer;
-
-		public static void Main(){
-			arwServer = new ARWServer();
-
-			Console.WriteLine("================================");
-			arwServer.host = "127.0.0.1";
-			arwServer.tcpPort = 8081;
-
-			arwServer.Init ();
-
-			arwServer.AddEventHandler (ARWEvents.CONNECTION, Deneme);
-			arwServer.Connect();
-
-			arwServer.ProcessEvents ();
-		}
-
-		public static void Deneme(ARWObject evntObj){
-			Console.WriteLine ("Connection Success");
-			arwServer.SendLoginRequest ("umut", null);
-		}
 	}
 }
