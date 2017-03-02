@@ -18,15 +18,39 @@ namespace ARWServer
 		}
 
 		public string GetString(string key){
-			var entry = dataList.Where (a => a.Key == key).Select (a => (KeyValuePair<string,object>?) a).FirstOrDefault ();
 
 			try{
+				var entry = dataList.Where (a => a.Key == key).Select (a => (KeyValuePair<string,object>?) a).FirstOrDefault ();
 				return entry.Value.Value.ToString();
 			}catch(System.NullReferenceException e){
 				Console.WriteLine ("There was nothing like " + key);
 			}
 
 			return string.Empty;	
+		}
+
+		public int GetInt(string key){
+			var entry = dataList.Where (a => a.Key == key).Select (a => (KeyValuePair<string,object>?) a).FirstOrDefault ();
+
+			try{
+				return int.Parse(entry.Value.Value.ToString());
+			}catch(System.NullReferenceException e){
+				Console.WriteLine ("There was nothing like " + key);
+			}
+
+			return 0;
+		}
+
+		public float GetFloat(string key){
+			var entry = dataList.Where (a => a.Key == key).Select (a => (KeyValuePair<string,object>?) a).FirstOrDefault ();
+
+			try{
+				return float.Parse(entry.Value.Value.ToString());
+			}catch(System.NullReferenceException e){
+				Console.WriteLine ("There was nothing like " + key);
+			}
+
+			return 0.0f;
 		}
 
 		public string Compress(){
