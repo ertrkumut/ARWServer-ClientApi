@@ -16,6 +16,7 @@ namespace ARWServer
 			arwServer.Init ();
 
 			arwServer.AddEventHandler (ARWEvents.CONNECTION, ConnectionSuccess);
+			arwServer.AddEventHandler (ARWEvents.LOGIN, LoginHandler);
 			arwServer.Connect();
 
 			arwServer.ProcessEvents ();
@@ -24,6 +25,13 @@ namespace ARWServer
 		public static void ConnectionSuccess(ARWObject evntObj){
 			Console.WriteLine ("Connection Success");
 			arwServer.SendLoginRequest ("umut", null);
+		}
+
+		public static void LoginHandler(ARWObject evntObj){
+			string userName = evntObj.specialParam.GetString("userName");
+			int userId = evntObj.specialParam.GetInt ("userId");
+
+			Console.WriteLine("Login Success : Name = " + userName + " - Id = " + userId);
 		}
 	}
 }
