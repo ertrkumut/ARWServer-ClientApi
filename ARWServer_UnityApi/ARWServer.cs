@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using System.Linq;
 
 #pragma warning disable 0168 // variable declared but not used.
 #pragma warning disable 0219 // variable assigned but not used.
@@ -40,15 +41,14 @@ namespace ARWServer
 			client = new TcpClient();
 			try{
 				client.Connect(host, tcpPort);
+				ARWObject newObj = new ARWObject ();
+				newObj.SetRequestName (ARWServer_CMD.Connection_Success);
+				SendReqeust (newObj);
 
 			}catch(System.Net.Sockets.SocketException e){
 				Console.WriteLine (e);
 				return;
 			}
-
-			ARWObject newObj = new ARWObject ();
-			newObj.SetRequestName ("ConnectionSuccess");
-			SendReqeust (newObj);
 		}
 
 		public void Init(){
@@ -70,16 +70,15 @@ namespace ARWServer
 							var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
 							ARWObject newObj = ARWObject.Extract(readBytes);
 
-							if(newObj.GetRequestName() == "ConnectionSuccess"){
-								if(ARWEvents.CONNECTION.handler == null)
-									return;
-								
-								ARWEvents.CONNECTION.handler(newObj);
-							}
+							ARWEvent currentEvent = ARWEvents.allEvents.Where(a=>a.eventName == newObj.GetRequestName()).FirstOrDefault();
+							currentEvent.handler(newObj);
+
 						}catch(System.ObjectDisposedException e){
 								
 						}catch(System.IO.IOException a){
 							
+						}catch(System.NullReferenceException a){
+							Console.WriteLine(a);
 						}
 					});
 					Thread childSocketThreat = new Thread (threadFunc);
@@ -96,7 +95,7 @@ namespace ARWServer
 				if (loginObj == null)
 					loginObj = new ARWObject ();
 
-				loginObj.SetRequestName ("LoginEvent");
+				loginObj.SetRequestName (ARWServer_CMD.Login);
 				loginObj.specialParam.PutVariable ("userName", "umut");
 
 				SendReqeust(loginObj);
@@ -111,7 +110,6 @@ namespace ARWServer
 
 			byte[] bytesToSend = arwObject.Compress ();
 			client.Client.Send (bytesToSend);
-			Console.WriteLine (arwObject.GetRequestName() + " Send");
 		}
 
 		public void AddEventHandler(ARWEvent evnt, EventHandler handler){
