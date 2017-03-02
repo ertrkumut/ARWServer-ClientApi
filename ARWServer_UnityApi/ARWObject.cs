@@ -29,8 +29,17 @@ namespace ARWServer
 		public string GetRequestName(){
 			return this.requestName;
 		}
+
 		public void PutString(string key, string value){
 			dataList.Add (key, value);	
+		}
+
+		public void PutInt(string key, int value){
+			dataList.Add (key, value);	
+		}
+
+		public void PutFloat(string key, float value){
+			dataList.Add (key, value);
 		}
 
 		public string GetString(string key){
@@ -43,6 +52,30 @@ namespace ARWServer
 			}
 
 			return string.Empty;
+		}
+
+		public float GetInt(string key){
+			var entry = dataList.Where (a => a.Key == key).Select (a => (KeyValuePair<string,object>?) a).FirstOrDefault ();
+
+			try{
+				return int.Parse(entry.Value.Value.ToString());
+			}catch(System.NullReferenceException e){
+				Console.WriteLine ("There was nothing like " + key);
+			}
+
+			return 0;
+		}
+
+		public float GetFloat(string key){
+			var entry = dataList.Where (a => a.Key == key).Select (a => (KeyValuePair<string,object>?) a).FirstOrDefault ();
+
+			try{
+				return float.Parse(entry.Value.Value.ToString());
+			}catch(System.NullReferenceException e){
+				Console.WriteLine ("There was nothing like " + key);
+			}
+
+			return 0.0f;
 		}
 
 		public static ARWObject Extract(byte[] bytes){
