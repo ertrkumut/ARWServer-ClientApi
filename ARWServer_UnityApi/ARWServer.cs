@@ -87,7 +87,7 @@ namespace ARWServer_UnityApi
 				arwObj = new ARWObject ();
 
 			arwObj.SetRequestName (ARWServer_CMD.Any_Join_Room);
-			arwObj.eventParams.PutVariable ("RoomTag", roomTag);
+			arwObj.eventParams.PutVariable ("roomTag", roomTag);
 
 			SendReqeust (arwObj);
 		}
