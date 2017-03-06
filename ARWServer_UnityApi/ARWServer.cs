@@ -8,7 +8,7 @@ using System.Linq;
 #pragma warning disable 0219 // variable assigned but not used.
 #pragma warning disable 0414 // private field assigned but not used.
 
-namespace ARWServer
+namespace ARWServer_UnityApi
 {
 
 	public class ARWServer{
@@ -35,7 +35,7 @@ namespace ARWServer
 			}
 		}
 
-		private TcpListener listener;
+		private TcpListener tcpListener;
 
 		public void Connect(){
 			client = new TcpClient();
@@ -56,37 +56,40 @@ namespace ARWServer
 		}
 
 		public void ProcessEvents(){
-			IPAddress ipAddrss = IPAddress.Parse (this.host);
-			listener = new TcpListener (ipAddrss, this.tcpPort);
-
-			listener.Start ();
+//			IPAddress ipAddrss = IPAddress.Parse (this.host);
+//			tcpListener = new TcpListener (ipAddrss, this.tcpPort);
+			tcpListener = new TcpListener (IPAddress.Any, this.tcpPort);
+//			tcpListener.Start ();
 
 			while (true) {
 				try{
-					ThreadStart threadFunc = new ThreadStart (delegate() {
-						try{
-							byte[] readBytes = new byte[this.client.ReceiveBufferSize];
-							this.ns.Read(readBytes,0,readBytes.Length);
-							var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
-							ARWObject newObj = ARWObject.Extract(readBytes);
+					byte[] readBytes = new byte[1024];
+					this.ns.Read(readBytes,0,readBytes.Length);
+					var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
+					ARWObject newObj = ARWObject.Extract(readBytes);
+					ARWEvent currentEvent = ARWEvents.allEvents.Where(a=>a.eventName == newObj.GetRequestName()).FirstOrDefault();
+					currentEvent.handler(newObj);
 
-							ARWEvent currentEvent = ARWEvents.allEvents.Where(a=>a.eventName == newObj.GetRequestName()).FirstOrDefault();
-							currentEvent.handler(newObj);
+				}catch(System.ObjectDisposedException e){
 
-						}catch(System.ObjectDisposedException e){
-								
-						}catch(System.IO.IOException a){
-							
-						}catch(System.NullReferenceException a){
-							Console.WriteLine(a);
-						}
-					});
-					Thread childSocketThreat = new Thread (threadFunc);
-					childSocketThreat.Start ();
-				}catch(System.ObjectDisposedException){
-					Console.WriteLine ("Object Disposed Exception");
+				}catch(System.IO.IOException a){
+
+				}catch(System.NullReferenceException a){
+					Console.WriteLine("Event Not Found !!!");
+				}catch(System.OutOfMemoryException a){
+					
 				}
 			}
+		}
+
+		public void SendJoin_AnyRoomRequest(string roomTag, ARWObject arwObj){
+			if (arwObj == null)
+				arwObj = new ARWObject ();
+
+			arwObj.SetRequestName (ARWServer_CMD.Any_Join_Room);
+			arwObj.eventParams.PutVariable ("RoomTag", roomTag);
+
+			SendReqeust (arwObj);
 		}
 
 		public void SendLoginRequest(string userName, ARWObject arwObject){
@@ -96,7 +99,7 @@ namespace ARWServer
 					loginObj = new ARWObject ();
 
 				loginObj.SetRequestName (ARWServer_CMD.Login);
-				loginObj.specialParam.PutVariable ("userName", "umut");
+				loginObj.eventParams.PutVariable ("userName", userName);
 
 				SendReqeust(loginObj);
 			});

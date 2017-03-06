@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ARWServer
+namespace ARWServer_UnityApi
 {
 	public class ExampleClient
 	{
@@ -17,6 +17,7 @@ namespace ARWServer
 
 			arwServer.AddEventHandler (ARWEvents.CONNECTION, ConnectionSuccess);
 			arwServer.AddEventHandler (ARWEvents.LOGIN, LoginHandler);
+			arwServer.AddEventHandler (ARWEvents.ROOM_JOIN, RoomJoinHandler);
 			arwServer.Connect();
 
 			arwServer.ProcessEvents ();
@@ -24,14 +25,20 @@ namespace ARWServer
 
 		public static void ConnectionSuccess(ARWObject evntObj){
 			Console.WriteLine ("Connection Success");
-			arwServer.SendLoginRequest ("umut", null);
+			arwServer.SendLoginRequest ("deniz", null);
 		}
 
 		public static void LoginHandler(ARWObject evntObj){
-			string userName = evntObj.specialParam.GetString("userName");
-			int userId = evntObj.specialParam.GetInt ("userId");
+			User loginedUser = new User (evntObj.eventParams);
 
-			Console.WriteLine("Login Success : Name = " + userName + " - Id = " + userId);
+			Console.WriteLine("Login Success : Name = " + loginedUser.name + " - Id = " + loginedUser.id + "- IsMe : " + loginedUser.isMe);
+			arwServer.SendJoin_AnyRoomRequest ("any", null);
+		}
+
+		public static void RoomJoinHandler(ARWObject evntObj){
+//			Room currentRoom = new Room (evntObj.eventParams);
+
+			Console.WriteLine("Room Join Success : " + evntObj.eventParams.GetString("roomName"));
 		}
 	}
 }

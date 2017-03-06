@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ARWServer
+namespace ARWServer_UnityApi
 {
 
 	public delegate void EventHandler(ARWObject evntObj);

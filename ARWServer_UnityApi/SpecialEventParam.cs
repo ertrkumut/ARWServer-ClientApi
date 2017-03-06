@@ -6,7 +6,7 @@ using System.Linq;
 #pragma warning disable 0219 // variable assigned but not used.
 #pragma warning disable 0414 // private field assigned but not used.
 
-namespace ARWServer
+namespace ARWServer_UnityApi
 {
 	public class SpecialEventParam
 	{
@@ -64,10 +64,8 @@ namespace ARWServer
 			return data;
 		}
 
-		public static SpecialEventParam Extract(byte[] bytes){
+		public static SpecialEventParam Extract(string data){
 			SpecialEventParam newSpecialEventParam = new SpecialEventParam();
-
-			string data = System.Text.Encoding.UTF8.GetString (bytes).Replace ("\0", null).Replace ("\"", null);
 
 			if (data == null)
 				return newSpecialEventParam;

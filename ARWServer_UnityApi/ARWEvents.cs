@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ARWServer
+namespace ARWServer_UnityApi
 {
 	public class ARWEvents
 	{

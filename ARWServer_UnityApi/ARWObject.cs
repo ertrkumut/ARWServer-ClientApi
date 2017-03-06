@@ -6,12 +6,12 @@ using System.Linq;
 #pragma warning disable 0219 // variable assigned but not used.
 #pragma warning disable 0414 // private field assigned but not used.
 
-namespace ARWServer
+namespace ARWServer_UnityApi
 {
 	public class ARWObject
 	{
 		private string 						requestName;
-		public SpecialEventParam 			specialParam;
+		public SpecialEventParam 			eventParams;
 
 		private IDictionary<string, object> dataList;
 
@@ -19,7 +19,7 @@ namespace ARWServer
 		public ARWObject(){
 			dataList 		= new Dictionary<string, object> ();
 			requestName 	= String.Empty;
-			specialParam 	= new SpecialEventParam ();
+			eventParams 	= new SpecialEventParam ();
 		}
 
 		public void SetRequestName(string reqName){
@@ -83,13 +83,18 @@ namespace ARWServer
 
 			ARWObject newObj = new ARWObject ();
 			string[] dataParts = data.Split ('.');
-			newObj.requestName = dataParts [0];
+			if (dataParts.Length == 3) {
+				newObj.requestName = dataParts [0];
 
-			string[] prms = dataParts [1].Split ('_');
-			foreach (string p in prms) {
-				string[] paramParts = p.Split ('#');
-				if (paramParts.Length == 2)
-					newObj.dataList.Add (paramParts [0], paramParts [1]);
+				string[] prms = dataParts [1].Split ('_');
+				foreach (string p in prms) {
+					string[] paramParts = p.Split ('#');
+					if (paramParts.Length == 2)
+						newObj.dataList.Add (paramParts [0], paramParts [1]);
+				}
+
+				newObj.eventParams = SpecialEventParam.Extract (dataParts [2]);
+				return newObj;
 			}
 			return newObj;
 		}
@@ -103,7 +108,7 @@ namespace ARWServer
 			}
 			data = data.TrimEnd ('_');
 
-			data += "." + specialParam.Compress ();
+			data += "." + eventParams.Compress ();
 
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes (data);
 			return bytes;
