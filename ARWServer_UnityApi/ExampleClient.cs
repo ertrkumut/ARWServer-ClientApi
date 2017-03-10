@@ -19,6 +19,7 @@ namespace ARWServer_UnityApi
 			arwServer.AddEventHandler (ARWEvents.CONNECTION, Connection);
 			arwServer.AddEventHandler (ARWEvents.LOGIN, LoginHandler);
 			arwServer.AddEventHandler (ARWEvents.ROOM_JOIN, RoomJoinHandler);
+			arwServer.AddEventHandler (ARWEvents.LOGIN_ERROR, Login_Error);
 			arwServer.Connect();
 
 			arwServer.ProcessEvents ();
@@ -40,6 +41,11 @@ namespace ARWServer_UnityApi
 			Console.WriteLine("Login Success : Name = " + loginedUser.name + " - Id = " + loginedUser.id + "- IsMe : " + loginedUser.isMe);
 			arwServer.SendJoin_AnyRoomRequest ("Game_Room", null);
 		}
+
+		public static void Login_Error(ARWObject obj){
+			Console.WriteLine("==> Login Error : " + obj.GetString("error"));
+		}
+
 
 		public static void RoomJoinHandler(ARWObject evntObj){
 			Room currentRoom = evntObj.GetRoom ();
