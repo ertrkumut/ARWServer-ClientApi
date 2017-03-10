@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
@@ -13,18 +14,13 @@ namespace ARWServer_UnityApi
 
 	public class ARWServer{
 
+		public static List<Room> allRooms;
+
 		public string host;
 		public int tcpPort;
 		public int udpPort;
 
-		public bool isConnected{
-			get{ 
-				if (this.client == null)
-					return false;
-
-				return this.client.Connected;
-			}
-		}
+		public bool isConnected;
 
 		private TcpClient client;
 		private NetworkStream ns{
@@ -37,6 +33,8 @@ namespace ARWServer_UnityApi
 
 		private TcpListener tcpListener;
 
+		public User me;
+
 		public void Connect(){
 			client = new TcpClient();
 			try{
@@ -46,36 +44,50 @@ namespace ARWServer_UnityApi
 				SendReqeust (newObj);
 
 			}catch(System.Net.Sockets.SocketException e){
-				Console.WriteLine (e);
+				ARWObject obj = new ARWObject ();
+				obj.PutString ("error", e.Message);
+				ARWEvents.CONNECTION.p_handler (this, obj);
 				return;
 			}
 		}
 
 		public void Init(){
+			UserManager.allUserInGame = new List<User> ();
+			allRooms = new List<Room> ();
 			ARWEvents.Init ();
 		}
 
 		public void ProcessEvents(){
-//			IPAddress ipAddrss = IPAddress.Parse (this.host);
-//			tcpListener = new TcpListener (ipAddrss, this.tcpPort);
 			tcpListener = new TcpListener (IPAddress.Any, this.tcpPort);
-//			tcpListener.Start ();
 
 			while (true) {
 				try{
+
+					if(this.client.Client.Poll(1, SelectMode.SelectRead) && !this.ns.DataAvailable){
+						ARWEvents.DISCONNECTION.p_handler(this, new ARWObject());
+					}
+						
+
 					byte[] readBytes = new byte[1024];
 					this.ns.Read(readBytes,0,readBytes.Length);
 					var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
+
 					ARWObject newObj = ARWObject.Extract(readBytes);
 					ARWEvent currentEvent = ARWEvents.allEvents.Where(a=>a.eventName == newObj.GetRequestName()).FirstOrDefault();
-					currentEvent.handler(newObj);
 
+					if(currentEvent != null){
+						if(currentEvent.p_handler != null){
+							currentEvent.p_handler(this, newObj);
+						}else{
+							if(currentEvent.handler!=null)
+								currentEvent.handler(newObj);
+						}
+					}
+				
 				}catch(System.ObjectDisposedException e){
 
 				}catch(System.IO.IOException a){
 
-				}catch(System.NullReferenceException a){
-					Console.WriteLine("Event Not Found !!!");
 				}catch(System.OutOfMemoryException a){
 					
 				}
@@ -119,8 +131,10 @@ namespace ARWServer_UnityApi
 			evnt.handler += handler;
 		}
 
-		#region PrivateHandlers
-
-		#endregion
+		public void Disconnection(){
+			this.client.Close ();
+			if (ARWEvents.DISCONNECTION.handler != null)
+				ARWEvents.DISCONNECTION.handler (new ARWObject ());
+		}
 	}
 }

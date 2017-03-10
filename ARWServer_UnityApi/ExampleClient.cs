@@ -7,6 +7,7 @@ namespace ARWServer_UnityApi
 		public static ARWServer arwServer;
 
 		public static void Main(){
+
 			arwServer = new ARWServer();
 
 			Console.WriteLine("================================");
@@ -15,7 +16,7 @@ namespace ARWServer_UnityApi
 
 			arwServer.Init ();
 
-			arwServer.AddEventHandler (ARWEvents.CONNECTION, ConnectionSuccess);
+			arwServer.AddEventHandler (ARWEvents.CONNECTION, Connection);
 			arwServer.AddEventHandler (ARWEvents.LOGIN, LoginHandler);
 			arwServer.AddEventHandler (ARWEvents.ROOM_JOIN, RoomJoinHandler);
 			arwServer.Connect();
@@ -23,22 +24,26 @@ namespace ARWServer_UnityApi
 			arwServer.ProcessEvents ();
 		}
 
-		public static void ConnectionSuccess(ARWObject evntObj){
-			Console.WriteLine ("Connection Success");
-			arwServer.SendLoginRequest ("deniz", null);
+		public static void Connection(ARWObject evntObj){
+			if (evntObj.GetString ("error") == "") {
+				Console.WriteLine ("ConnectionSuccess");
+				arwServer.SendLoginRequest ("deniz", null);
+				return;
+			}
+
+			Console.WriteLine(evntObj.GetString("error"));
 		}
 
 		public static void LoginHandler(ARWObject evntObj){
-			User loginedUser = new User (evntObj.eventParams);
+			User loginedUser = evntObj.GetUser ();
 
 			Console.WriteLine("Login Success : Name = " + loginedUser.name + " - Id = " + loginedUser.id + "- IsMe : " + loginedUser.isMe);
-			arwServer.SendJoin_AnyRoomRequest ("any", null);
+			arwServer.SendJoin_AnyRoomRequest ("Game_Room", null);
 		}
 
 		public static void RoomJoinHandler(ARWObject evntObj){
-//			Room currentRoom = new Room (evntObj.eventParams);
-
-			Console.WriteLine("Room Join Success : " + evntObj.eventParams.GetString("roomName"));
+			Room currentRoom = evntObj.GetRoom ();
+			Console.WriteLine("Room Join Success : " + currentRoom.name + " : " + currentRoom.tag + " : " + currentRoom.userList.Length);
 		}
 	}
 }

@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace ARWServer_UnityApi
 {
+
 	public class ARWObject
 	{
 		private string 						requestName;
@@ -31,6 +32,7 @@ namespace ARWServer_UnityApi
 		}
 
 		public void PutString(string key, string value){
+			Console.WriteLine (key + " : " + value);
 			dataList.Add (key, value);	
 		}
 
@@ -112,6 +114,16 @@ namespace ARWServer_UnityApi
 
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes (data);
 			return bytes;
+		}
+
+		public User GetUser(){
+			User u = UserManager.allUserInGame.Where (a => a.id == this.eventParams.GetInt ("userId")).FirstOrDefault ();
+			return u;
+		}
+
+		public Room GetRoom(){
+			Room newRoom = ARWServer.allRooms.Where (a => a.name == this.eventParams.GetString ("RoomName")).FirstOrDefault ();
+			return newRoom;
 		}
 	}
 }
