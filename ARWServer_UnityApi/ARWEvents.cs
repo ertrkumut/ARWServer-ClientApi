@@ -42,7 +42,7 @@ namespace ARWServer_UnityApi
 			LOGIN 						= new ARWEvent (ARWServer_CMD.Login);
 			LOGIN.p_handler 			= _privateEventHandlers.P_Login;
 
-			LOGIN_ERROR 				= new ARWEvent ();
+			LOGIN_ERROR 				= new ARWEvent (ARWServer_CMD.Login_Error);
 
 			LOGOUT 						= new ARWEvent ();
 
@@ -60,7 +60,9 @@ namespace ARWServer_UnityApi
 			ROOM_CREATE.p_handler 		= _privateEventHandlers.P_Room_Create;
 
 			allEvents.Add (CONNECTION);
+			allEvents.Add (CONNECTION_LOST);
 			allEvents.Add (LOGIN);
+			allEvents.Add (LOGIN_ERROR);
 			allEvents.Add (ROOM_JOIN);
 			allEvents.Add (USER_ENTER_ROOM);
 			allEvents.Add (USER_EXIT_ROOM);
