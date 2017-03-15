@@ -4,7 +4,8 @@ namespace ARWServer_UnityApi
 {
 	public static class ARWServer_CMD
 	{
-		public static string Connection_Success = "CONNECTIONSUCCESS";
+		public static string Exception_Error 	= "EXCEPTION_ERROR";
+		public static string Connection_Success = "CONNECTION_SUCCESS";
 		public static string Connection_Error 	= "CONNECTION_ERROR";
 		public static string Connection_Lost 	= "CONNECTION_LOST";
 		public static string Disconnection 		= "DISCONNECTION";
