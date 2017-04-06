@@ -16,6 +16,7 @@ namespace ARWServer_UnityApi
 		public static string User_Enter_Room    = "USER_ENTER_ROOM";
 		public static string User_Exit_Room     = "USER_EXIT_ROOM";
 		public static string Room_Create		= "ROOM_CREATE";
+		public static string Extension_Request  = "EXTENTION_REQUEST";
 	}
 }
 
