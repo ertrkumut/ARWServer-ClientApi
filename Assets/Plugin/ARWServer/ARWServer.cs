@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 using System.Linq;
+using UnityEngine;
 
 namespace ARWServer_UnityApi
 {
@@ -56,37 +58,40 @@ namespace ARWServer_UnityApi
 		public void ProcessEvents(){
 			tcpListener = new TcpListener (IPAddress.Any, this.tcpPort);
 
-			while (true) {
-				try{
+			if(this.client == null)
+				return;
 
-					if(this.client.Client.Poll(1, SelectMode.SelectRead) && !this.ns.DataAvailable){
-						ARWEvents.DISCONNECTION.p_handler(this, new ARWObject());
-					}
-						
-
-					byte[] readBytes = new byte[1024];
-					this.ns.Read(readBytes,0,readBytes.Length);
-					var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
-
-					ARWObject newObj = ARWObject.Extract(readBytes);
-					ARWEvent currentEvent = ARWEvents.allEvents.Where(a=>a.eventName == newObj.GetRequestName()).FirstOrDefault();
-
-					if(currentEvent != null){
-						if(currentEvent.p_handler != null){
-							currentEvent.p_handler(this, newObj);
-						}else{
-							if(currentEvent.handler!=null)
-								currentEvent.handler(newObj);
-						}
-					}
-				
-				}catch(System.ObjectDisposedException e){
-
-				}catch(System.IO.IOException a){
-
-				}catch(System.OutOfMemoryException a){
-					
+			try{
+				if(this.client.Client.Poll(1, SelectMode.SelectRead) && !this.ns.DataAvailable){
+					ARWEvents.DISCONNECTION.p_handler(this, new ARWObject());
 				}
+					
+				byte[] readBytes = new byte[1024];
+				if(this.ns != null && this.ns.DataAvailable){
+					this.ns.Read(readBytes, 0, readBytes.Length);
+				}
+				else
+					return;
+
+				var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
+				ARWObject newObj = ARWObject.Extract(readBytes);
+				ARWEvent currentEvent = ARWEvents.allEvents.Where(a=>a.eventName == newObj.GetRequestName()).FirstOrDefault();
+
+				if(currentEvent != null){
+					if(currentEvent.p_handler != null){
+						currentEvent.p_handler(this, newObj);
+					}else{
+						if(currentEvent.handler!=null)
+							currentEvent.handler(newObj);
+					}
+				}
+			
+			}catch(System.ObjectDisposedException e){
+
+			}catch(System.IO.IOException a){
+
+			}catch(System.OutOfMemoryException a){
+				
 			}
 		}
 
@@ -113,6 +118,15 @@ namespace ARWServer_UnityApi
 			});
 			Thread loginThread = new Thread (threadFunc);
 			loginThread.Start ();
+		}
+
+		public void SendExtensionRequest(string cmd, ARWObject arwObj, bool room = false, bool isTcp = false){
+		
+			arwObj.eventParams.PutVariable("cmd", cmd);
+			arwObj.eventParams.PutVariable("isRoomRequest", room);
+			arwObj.SetRequestName(ARWServer_CMD.Extension_Request);
+
+			this.SendReqeust(arwObj);
 		}
 
 		public void SendReqeust(ARWObject arwObject){
