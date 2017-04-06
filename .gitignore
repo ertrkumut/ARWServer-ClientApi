@@ -7,10 +7,6 @@ ARWServer_UnityApi/obj
 ARWServer_UnityApi/Properties
 *.sublime-project
 *.exe
-Library
 Temp
-ProjectSettings
-*.meta
-Scenes
 *.sublime-workspace
 *.csproj
