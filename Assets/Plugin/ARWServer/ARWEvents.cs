@@ -6,11 +6,12 @@ namespace ARWServer_UnityApi
 	public class ARWEvents
 	{
 		public static List<ARWEvent> allEvents;
+		public static List<ExtensionRequest> extensionRequests;
 
 		public static ARWEvent CONNECTION;
 		public static ARWEvent CONNECTION_LOST;
 		public static ARWEvent DISCONNECTION;
-		public static ARWEvent EXTENSION_RESPONCE;
+		private static ARWEvent EXTENSION_REQUEST;
 		public static ARWEvent LOGIN;
 		public static ARWEvent LOGIN_ERROR;
 		public static ARWEvent LOGOUT;
@@ -26,6 +27,7 @@ namespace ARWServer_UnityApi
 			PrivateEventHandlers _privateEventHandlers = new PrivateEventHandlers ();
 
 			allEvents = new List<ARWEvent> ();
+			extensionRequests = new List<ExtensionRequest>();
 
 			CONNECTION 					= new ARWEvent(ARWServer_CMD.Connection_Success);
 			CONNECTION.p_handler 		= _privateEventHandlers.P_Connection;
@@ -37,7 +39,8 @@ namespace ARWServer_UnityApi
 			DISCONNECTION 				= new ARWEvent (ARWServer_CMD.Disconnection);
 			DISCONNECTION.p_handler 	= _privateEventHandlers.P_Disconnection;
 
-			EXTENSION_RESPONCE 			= new ARWEvent ();
+			EXTENSION_REQUEST 			= new ARWEvent (ARWServer_CMD.Extension_Request);
+			EXTENSION_REQUEST.p_handler = _privateEventHandlers.P_Extension_Handler;
 
 			LOGIN 						= new ARWEvent (ARWServer_CMD.Login);
 			LOGIN.p_handler 			= _privateEventHandlers.P_Login;
@@ -68,6 +71,7 @@ namespace ARWServer_UnityApi
 			allEvents.Add (USER_EXIT_ROOM);
 			allEvents.Add (DISCONNECTION);
 			allEvents.Add (ROOM_CREATE);
+			allEvents.Add(EXTENSION_REQUEST);
 		}
 	}
 }
