@@ -44,10 +44,6 @@ public class ServerController : MonoBehaviour {
 		ARWObject zoneObj = new ARWObject();
 		zoneObj.PutString("Deneme", "Hello Zone!");
 		server.SendExtensionRequest("Hello", zoneObj, false, false);
-
-		// ARWObject roomObj = new ARWObject();
-		// roomObj.PutString("Deneme", "Hello Room!");
-		// server.SendExtensionRequest("Hello", roomObj, true, false);
 	}
 
 	private void OnLoginError(ARWObject obj){
@@ -57,7 +53,6 @@ public class ServerController : MonoBehaviour {
 	private void OnExtensionResponse(ARWObject obj){
 		
 	}
-
 
 	private void OnDisconectionHandler(ARWObject obj){
 		Debug.Log("Disconnection!");

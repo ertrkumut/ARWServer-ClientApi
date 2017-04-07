@@ -39,8 +39,9 @@ namespace ARWServer_UnityApi
 				client.Connect(host, tcpPort);
 				ARWObject newObj = new ARWObject ();
 				newObj.SetRequestName (ARWServer_CMD.Connection_Success);
-				SendReqeust (newObj);
-
+				
+				Thread t = new Thread(() => SendReqeust(newObj));
+				t.Start();
 			}catch(System.Net.Sockets.SocketException e){
 				ARWObject obj = new ARWObject ();
 				obj.PutString ("error", e.Message);
@@ -103,7 +104,8 @@ namespace ARWServer_UnityApi
 			arwObj.SetRequestName (ARWServer_CMD.Any_Join_Room);
 			arwObj.eventParams.PutVariable ("roomTag", roomTag);
 
-			SendReqeust (arwObj);
+			Thread t = new Thread(() => SendReqeust(arwObj));
+			t.Start();
 		}
 
 		public void SendLoginRequest(string userName, ARWObject arwObject){
@@ -115,19 +117,21 @@ namespace ARWServer_UnityApi
 				loginObj.SetRequestName (ARWServer_CMD.Login);
 				loginObj.eventParams.PutVariable ("userName", userName);
 
-				SendReqeust(loginObj);
+				Thread t = new Thread(() => SendReqeust(loginObj));
+				t.Start();
 			});
 			Thread loginThread = new Thread (threadFunc);
 			loginThread.Start ();
 		}
 
 		public void SendExtensionRequest(string cmd, ARWObject arwObj, bool room = false, bool isTcp = false){
-		
+			
 			arwObj.eventParams.PutVariable("cmd", cmd);
 			arwObj.eventParams.PutVariable("isRoomRequest", room);
 			arwObj.SetRequestName(ARWServer_CMD.Extension_Request);
 
-			this.SendReqeust(arwObj);
+			Thread t = new Thread(() => SendReqeust(arwObj));
+			t.Start();
 		}
 
 		public void AddExtensionRequest(string cmd, EventHandler handler){
