@@ -81,8 +81,9 @@ namespace ARWServer_UnityApi
 					if(currentEvent.p_handler != null){
 						currentEvent.p_handler(this, newObj);
 					}else{
-						if(currentEvent.handler!=null)
+						if(currentEvent.handler!=null){
 							currentEvent.handler(newObj);
+						}
 					}
 				}
 			
@@ -129,6 +130,19 @@ namespace ARWServer_UnityApi
 			this.SendReqeust(arwObj);
 		}
 
+		public void AddExtensionRequest(string cmd, EventHandler handler){
+
+			ExtensionRequest isEventExist = ARWEvents.extensionRequests.Where(a=>a.cmd == cmd).FirstOrDefault();
+			if(isEventExist != null)
+				return;
+
+			ExtensionRequest newEvent = new ExtensionRequest();
+			newEvent.cmd = cmd;
+			newEvent.handler = handler;
+
+			ARWEvents.extensionRequests.Add(newEvent);
+		}
+
 		public void SendReqeust(ARWObject arwObject){
 			if (arwObject == null)
 				return;
@@ -141,7 +155,7 @@ namespace ARWServer_UnityApi
 			evnt.handler += handler;
 		}
 
-		public void Disconnection(){
+		public void Disconnect(){
 			this.client.Close ();
 			if (ARWEvents.DISCONNECTION.handler != null)
 				ARWEvents.DISCONNECTION.handler (new ARWObject ());

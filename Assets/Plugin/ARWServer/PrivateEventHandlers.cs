@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using UnityEngine;
 
 namespace ARWServer_UnityApi
 {
@@ -57,6 +58,16 @@ namespace ARWServer_UnityApi
 			}
 			if (ARWEvents.ROOM_JOIN.handler != null) {
 				ARWEvents.ROOM_JOIN.handler (obj);
+			}
+		}
+
+		public void P_Extension_Handler(ARWServer server, ARWObject obj){
+			string cmd = obj.eventParams.GetString("cmd");
+
+			ExtensionRequest req = ARWEvents.extensionRequests.Where(a=>a.cmd == cmd).FirstOrDefault();
+		
+			if(req != null){
+				req.handler(obj);
 			}
 		}
 	}
