@@ -74,26 +74,32 @@ namespace ARWServer_UnityApi
 				else
 					return;
 
-				var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
-				ARWObject newObj = ARWObject.Extract(readBytes);
-				ARWEvent currentEvent = ARWEvents.allEvents.Where(a=>a.eventName == newObj.GetRequestName()).FirstOrDefault();
-
-				if(currentEvent != null){
-					if(currentEvent.p_handler != null){
-						currentEvent.p_handler(this, newObj);
-					}else{
-						if(currentEvent.handler!=null){
-							currentEvent.handler(newObj);
-						}
-					}
-				}
+				Thread t = new Thread(() => HandleRequest(readBytes));
+				t.Start();
 			
 			}catch(System.ObjectDisposedException e){
-
+				Debug.Log("1");
 			}catch(System.IO.IOException a){
-
+				Debug.Log("2");
 			}catch(System.OutOfMemoryException a){
-				
+				Debug.Log("3");
+			}
+		}
+
+		private void HandleRequest(byte[] readBytes){
+			var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
+			Debug.Log(message);
+			ARWObject newObj = ARWObject.Extract(readBytes);
+			ARWEvent currentEvent = ARWEvents.allEvents.Where(a=>a.eventName == newObj.GetRequestName()).FirstOrDefault();
+
+			if(currentEvent != null){
+				if(currentEvent.p_handler != null){
+					currentEvent.p_handler(this, newObj);
+				}else{
+					if(currentEvent.handler!=null){
+						currentEvent.handler(newObj);
+					}
+				}
 			}
 		}
 

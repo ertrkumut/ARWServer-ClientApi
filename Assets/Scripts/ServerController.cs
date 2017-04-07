@@ -19,6 +19,8 @@ public class ServerController : MonoBehaviour {
 		server.AddEventHandler(ARWEvents.LOGIN_ERROR, OnLoginError);
 		server.AddEventHandler(ARWEvents.DISCONNECTION, OnDisconectionHandler);
 
+		server.AddExtensionRequest("Hello", TestHandler);
+		
 		server.Connect();
 	}
 
@@ -50,8 +52,8 @@ public class ServerController : MonoBehaviour {
 		Debug.Log(obj.GetString("error"));
 	}
 
-	private void OnExtensionResponse(ARWObject obj){
-		
+	private void TestHandler(ARWObject obj){
+		Debug.Log(obj.GetString("Deneme"));
 	}
 
 	private void OnDisconectionHandler(ARWObject obj){
