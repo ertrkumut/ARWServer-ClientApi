@@ -5,8 +5,9 @@ ARWServer_UnityApi/ARWServer_UnityApi.csproj
 ARWServer_UnityApi/bin
 ARWServer_UnityApi/obj
 ARWServer_UnityApi/Properties
+Library/
 *.sublime-project
 *.exe
-Temp
+Temp/
 *.sublime-workspace
 *.csproj
