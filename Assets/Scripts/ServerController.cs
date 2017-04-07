@@ -18,7 +18,7 @@ public class ServerController : MonoBehaviour {
 		server.AddEventHandler(ARWEvents.LOGIN, OnLoginHandler);
 		server.AddEventHandler(ARWEvents.LOGIN_ERROR, OnLoginError);
 		server.AddEventHandler(ARWEvents.DISCONNECTION, OnDisconectionHandler);
-		server.AddEventHandler(ARWEvents.EXTENSION_RESPONCE, OnExtensionResponse);
+
 		server.Connect();
 	}
 
