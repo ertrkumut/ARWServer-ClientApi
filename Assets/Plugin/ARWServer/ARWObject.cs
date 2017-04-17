@@ -12,7 +12,6 @@ namespace ARWServer_UnityApi
 
 		private IDictionary<string, object> dataList;
 
-
 		public ARWObject(){
 			dataList 		= new Dictionary<string, object> ();
 			requestName 	= String.Empty;
@@ -78,6 +77,37 @@ namespace ARWServer_UnityApi
 
 		public static ARWObject Extract(byte[] bytes){
 			string data = System.Text.Encoding.UTF8.GetString (bytes).Replace("\0", null).Replace("\"",null);
+
+			ARWObject newObj = new ARWObject ();
+			string[] dataParts = data.Split ('.');
+			if (dataParts.Length == 3) {
+				newObj.requestName = dataParts [0];
+
+				string[] prms = dataParts [1].Split ('_');
+				foreach (string p in prms) {
+					string[] paramParts = p.Split ('#');
+					if (paramParts.Length == 2)
+						newObj.dataList.Add (paramParts [0], paramParts [1]);
+				}
+
+				newObj.eventParams = SpecialEventParam.Extract (dataParts [2]);
+				return newObj;
+			}
+			return newObj;
+		}
+
+		public static bool CanBeARWObject(string data){
+			ARWObject newObj = ARWObject.Extract(data);
+			ARWEvent currentEvent = ARWEvents.allEvents.Where(a=>a.eventName == newObj.GetRequestName()).FirstOrDefault();
+
+			if(currentEvent == null)
+				return false;
+
+			return true;
+		}
+
+		public static ARWObject Extract(string data){
+			// string data = System.Text.Encoding.UTF8.GetString (bytes).Replace("\0", null).Replace("\"",null);
 
 			ARWObject newObj = new ARWObject ();
 			string[] dataParts = data.Split ('.');
