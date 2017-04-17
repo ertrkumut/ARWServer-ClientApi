@@ -33,6 +33,8 @@ namespace ARWServer_UnityApi
 
 		public User me;
 
+		private string wrongData = string.Empty;
+
 		public void Connect(){
 			client = new TcpClient();
 			try{
@@ -57,7 +59,6 @@ namespace ARWServer_UnityApi
 		}
 
 		public void ProcessEvents(){
-			tcpListener = new TcpListener (IPAddress.Any, this.tcpPort);
 
 			if(this.client == null)
 				return;
@@ -67,29 +68,36 @@ namespace ARWServer_UnityApi
 					ARWEvents.DISCONNECTION.p_handler(this, new ARWObject());
 				}
 					
-				byte[] readBytes = new byte[1024];
+				byte[] readBytes = new byte[4096];
 				if(this.ns != null && this.ns.DataAvailable){
 					this.ns.Read(readBytes, 0, readBytes.Length);
 				}
 				else
 					return;
-
-				Thread t = new Thread(() => HandleRequest(readBytes));
-				t.Start();
+				
+				ParseRequestData(readBytes);
 			
 			}catch(System.ObjectDisposedException e){
-				Debug.Log("1");
 			}catch(System.IO.IOException a){
-				Debug.Log("2");
 			}catch(System.OutOfMemoryException a){
-				Debug.Log("3");
 			}
 		}
 
-		private void HandleRequest(byte[] readBytes){
+		private void ParseRequestData(byte[] readBytes){
 			var message = System.Text.Encoding.UTF8.GetString(readBytes).Replace("\0", null);
-			Debug.Log(message);
-			ARWObject newObj = ARWObject.Extract(readBytes);
+			string[] requestParts = message.Split('|');
+			for(int ii = 0; ii< requestParts.Length; ii++){
+				string part = requestParts[ii];
+				if(part != ""){
+					Thread t = new Thread(() => HandleRequest(part));
+					t.Start();
+				}
+			}
+		}
+
+		private void HandleRequest(string data){
+
+			ARWObject newObj = ARWObject.Extract(data);
 			ARWEvent currentEvent = ARWEvents.allEvents.Where(a=>a.eventName == newObj.GetRequestName()).FirstOrDefault();
 
 			if(currentEvent != null){
@@ -100,9 +108,17 @@ namespace ARWServer_UnityApi
 						currentEvent.handler(newObj);
 					}
 				}
+			}else{
+				wrongData += data;
+
+				if(ARWObject.CanBeARWObject(wrongData)){
+					wrongData += data;
+					HandleRequest(wrongData);
+					wrongData = "";
+					return;
+				}
 			}
 		}
-
 		public void SendJoin_AnyRoomRequest(string roomTag, ARWObject arwObj){
 			if (arwObj == null)
 				arwObj = new ARWObject ();
