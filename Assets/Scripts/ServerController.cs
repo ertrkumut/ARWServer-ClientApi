@@ -18,9 +18,8 @@ public class ServerController : MonoBehaviour {
 		server.AddEventHandler(ARWEvents.LOGIN, OnLoginHandler);
 		server.AddEventHandler(ARWEvents.LOGIN_ERROR, OnLoginError);
 		server.AddEventHandler(ARWEvents.DISCONNECTION, OnDisconectionHandler);
-
+		server.AddEventHandler(ARWEvents.USER_ENTER_ROOM, UserEnterRoom);
 		server.AddExtensionRequest("Hello", TestHandler);
-		
 		server.Connect();
 	}
 
@@ -42,10 +41,6 @@ public class ServerController : MonoBehaviour {
 	private void OnLoginHandler(ARWObject obj){
 		User user = obj.GetUser();
 		Debug.Log(user.name + " : " + user.id + " : " + user.isMe);
-
-		ARWObject zoneObj = new ARWObject();
-		zoneObj.PutString("Deneme", "Hello Zone!");
-		server.SendExtensionRequest("Hello", zoneObj, false, false);
 	}
 
 	private void OnLoginError(ARWObject obj){
@@ -54,6 +49,10 @@ public class ServerController : MonoBehaviour {
 
 	private void TestHandler(ARWObject obj){
 		Debug.Log(obj.GetString("Deneme"));
+	}
+	
+	private void UserEnterRoom(ARWObject obj){
+		Debug.Log("User Enter Room = " + obj.eventParams.GetString("userName") + " ID = " + obj.eventParams.GetInt("userId"));
 	}
 
 	private void OnDisconectionHandler(ARWObject obj){
