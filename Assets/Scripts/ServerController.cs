@@ -18,8 +18,9 @@ public class ServerController : MonoBehaviour {
 		server.AddEventHandler(ARWEvents.LOGIN, OnLoginHandler);
 		server.AddEventHandler(ARWEvents.LOGIN_ERROR, OnLoginError);
 		server.AddEventHandler(ARWEvents.DISCONNECTION, OnDisconectionHandler);
+		server.AddEventHandler(ARWEvents.ROOM_JOIN, RoomJoinSuccess);
 		server.AddEventHandler(ARWEvents.USER_ENTER_ROOM, UserEnterRoom);
-		server.AddExtensionRequest("Hello", TestHandler);
+
 		server.Connect();
 	}
 
@@ -41,14 +42,17 @@ public class ServerController : MonoBehaviour {
 	private void OnLoginHandler(ARWObject obj){
 		User user = obj.GetUser();
 		Debug.Log(user.name + " : " + user.id + " : " + user.isMe);
+
+		server.SendJoin_AnyRoomRequest("GameRoom", null);
 	}
 
 	private void OnLoginError(ARWObject obj){
 		Debug.Log(obj.GetString("error"));
 	}
 
-	private void TestHandler(ARWObject obj){
-		Debug.Log(obj.GetString("Deneme"));
+	private void RoomJoinSuccess(ARWObject obj){
+		Room currentRoom = obj.GetRoom();
+		Debug.Log("Join Room : " + currentRoom.name + " User Count : " + currentRoom.userList.Length);
 	}
 	
 	private void UserEnterRoom(ARWObject obj){
