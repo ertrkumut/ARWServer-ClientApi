@@ -52,7 +52,7 @@ public class ServerController : MonoBehaviour {
 
 	private void RoomJoinSuccess(ARWObject obj){
 		Room currentRoom = obj.GetRoom();
-		Debug.Log("Join Room : " + currentRoom.name + " User Count : " + currentRoom.userList.Length);
+		Debug.Log("Join Room : " + currentRoom.name + " User Count : " + currentRoom.GetUserList().Length);
 	}
 	
 	private void UserEnterRoom(ARWObject obj){
