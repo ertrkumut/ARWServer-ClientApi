@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ARWServer_UnityApi
 {
@@ -44,6 +45,11 @@ namespace ARWServer_UnityApi
 
 		public int GetUserCount(){
 			return this.GetUserList().Length;
+		}
+
+		public void AddUser(User u){
+			Debug.Log(this.userList.Length + " : " + this.GetUserCount());
+			this.userList[this.GetUserCount()] = u;
 		}
 	}
 }
