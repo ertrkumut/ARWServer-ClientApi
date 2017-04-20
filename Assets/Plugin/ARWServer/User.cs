@@ -13,6 +13,7 @@ namespace ARWServer_UnityApi
 
 		public User(){
 		}
+		
 		public User (SpecialEventParam e){
 			this.name = e.GetString ("userName");
 			this.id = e.GetInt ("userId");
@@ -20,6 +21,12 @@ namespace ARWServer_UnityApi
 			this.lastJoinedRoom = null;
 
 			UserManager.allUserInGame.Add (this);
+		}
+
+		public User(string name, int id, bool isMe){
+			this.name = name;
+			this.id = id;
+			this.isMe = isMe;
 		}
 	}
 }
