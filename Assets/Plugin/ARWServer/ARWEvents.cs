@@ -20,9 +20,6 @@ namespace ARWServer_UnityApi
 		public static ARWEvent USER_ENTER_ROOM;
 		public static ARWEvent USER_EXIT_ROOM;
 
-
-		private static ARWEvent ROOM_CREATE;
-
 		public static void Init(){
 			PrivateEventHandlers _privateEventHandlers = new PrivateEventHandlers ();
 
@@ -57,10 +54,6 @@ namespace ARWServer_UnityApi
 			USER_ENTER_ROOM 			= new ARWEvent (ARWServer_CMD.User_Enter_Room);
 
 			USER_EXIT_ROOM 				= new ARWEvent (ARWServer_CMD.User_Exit_Room);
-			
-
-			ROOM_CREATE 				= new ARWEvent (ARWServer_CMD.Room_Create);
-			ROOM_CREATE.p_handler 		= _privateEventHandlers.P_Room_Create;
 
 			allEvents.Add (CONNECTION);
 			allEvents.Add (CONNECTION_LOST);
@@ -70,8 +63,8 @@ namespace ARWServer_UnityApi
 			allEvents.Add (USER_ENTER_ROOM);
 			allEvents.Add (USER_EXIT_ROOM);
 			allEvents.Add (DISCONNECTION);
-			allEvents.Add (ROOM_CREATE);
 			allEvents.Add(EXTENSION_REQUEST);
+
 		}
 	}
 }
