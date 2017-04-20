@@ -7,7 +7,7 @@ namespace ARWServer_UnityApi
 	{
 		public string tag;
 		public string name;
-		public User[] userList;
+		private User[] userList;
 
 		public Room(SpecialEventParam e){
 			try{
@@ -40,6 +40,10 @@ namespace ARWServer_UnityApi
 				}
 			}
 			return tempArray;
+		}
+
+		public int GetUserCount(){
+			return this.GetUserList().Length;
 		}
 	}
 }
