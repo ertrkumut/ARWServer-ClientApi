@@ -38,26 +38,18 @@ namespace ARWServer_UnityApi
 			Room newRoom = new Room(obj.eventParams);
 			ARWServer.allRooms.Add (newRoom);
 
-			Console.WriteLine ("Room Create : " + newRoom.name + " : " + newRoom.tag + " : " + newRoom.userList.Length);
+			Console.WriteLine ("Room Create : " + newRoom.name + " : " + newRoom.tag + " : " + newRoom.GetUserList().Length);
 		}
 
 		public void P_Join_Room(ARWServer server, ARWObject obj){
-			Room currentRoom = ARWServer.allRooms.Where(a=>a.name == obj.eventParams.GetString("RoomName")).FirstOrDefault();
+			P_Room_Create(server, obj);
+
+			Room currentRoom = obj.GetRoom();
 			User currentUser = server.me;
 			server.me.lastJoinedRoom = currentRoom;
 
-			P_Room_Create(server, obj);
-			
-			try{
-				for(int ii = 0; ii<currentRoom.userList.Length; ii++){
-					User u = currentRoom.userList[ii];
-					if ( u== null){
-						currentRoom.userList[ii] = currentUser;
-						break;
-					}
-				}
-			}catch(System.NullReferenceException){
-			}
+			currentRoom.AddUser(currentUser);
+
 			if (ARWEvents.ROOM_JOIN.handler != null) {
 				ARWEvents.ROOM_JOIN.handler (obj);
 			}
