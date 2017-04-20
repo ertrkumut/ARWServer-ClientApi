@@ -46,6 +46,8 @@ namespace ARWServer_UnityApi
 			User currentUser = server.me;
 			server.me.lastJoinedRoom = currentRoom;
 
+			P_Room_Create(server, obj);
+			
 			try{
 				for(int ii = 0; ii<currentRoom.userList.Length; ii++){
 					User u = currentRoom.userList[ii];
