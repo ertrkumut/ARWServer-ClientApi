@@ -148,6 +148,9 @@ namespace ARWServer_UnityApi
 
 		public void SendExtensionRequest(string cmd, ARWObject arwObj, bool room = false, bool isTcp = false){
 			
+			if(arwObj == null)
+				arwObj = new ARWObject();
+				
 			arwObj.eventParams.PutVariable("cmd", cmd);
 			arwObj.eventParams.PutVariable("isRoomRequest", room);
 			arwObj.SetRequestName(ARWServer_CMD.Extension_Request);
