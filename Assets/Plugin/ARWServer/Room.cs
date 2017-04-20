@@ -23,6 +23,24 @@ namespace ARWServer_UnityApi
 			}catch(System.NullReferenceException){
 			}catch(System.IndexOutOfRangeException){}
 		}
+
+		public User[] GetUserList(){
+			int count = 0;
+
+			for(int ii = 0; ii< this.userList.Length; ii++){
+				if(this.userList[ii] != null)
+					count++;
+			}
+
+			User[] tempArray = new User[count];			int tempCount = 0;
+			for(int ii = 0; ii< this.userList.Length; ii++){
+				if(this.userList[ii] != null){
+					tempArray[tempCount] = this.userList[ii];
+					tempCount++;
+				}
+			}
+			return tempArray;
+		}
 	}
 }
 
