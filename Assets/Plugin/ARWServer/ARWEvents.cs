@@ -7,11 +7,11 @@ namespace ARWServer_UnityApi
 	{
 		public static List<ARWEvent> allEvents;
 		public static List<ExtensionRequest> extensionRequests;
-
+		
+#region Public Events
 		public static ARWEvent CONNECTION;
 		public static ARWEvent CONNECTION_LOST;
 		public static ARWEvent DISCONNECTION;
-		private static ARWEvent EXTENSION_REQUEST;
 		public static ARWEvent LOGIN;
 		public static ARWEvent LOGIN_ERROR;
 		public static ARWEvent LOGOUT;
@@ -19,7 +19,11 @@ namespace ARWServer_UnityApi
 		public static ARWEvent ROOM_JOIN_ERROR;
 		public static ARWEvent USER_ENTER_ROOM;
 		public static ARWEvent USER_EXIT_ROOM;
-
+#endregion
+		
+#region Private Events
+		private static ARWEvent EXTENSION_REQUEST;
+#endregion
 		public static void Init(){
 			PrivateEventHandlers _privateEventHandlers = new PrivateEventHandlers ();
 
