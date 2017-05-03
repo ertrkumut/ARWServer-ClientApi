@@ -172,7 +172,7 @@ namespace ARWServer_UnityApi
 			ARWEvents.extensionRequests.Add(newEvent);
 		}
 
-		public void SendReqeust(ARWObject arwObject){
+		private void SendReqeust(ARWObject arwObject){
 			if (arwObject == null)
 				return;
 
