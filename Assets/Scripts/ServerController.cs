@@ -36,7 +36,7 @@ public class ServerController : MonoBehaviour {
 		}
 		
 		Debug.Log("Connection Success");
-		server.SendLoginRequest("umut", new ARWObject());
+		server.SendLoginRequest("deniz", new ARWObject());
 	}
 
 	private void OnLoginHandler(ARWObject obj){
@@ -61,5 +61,9 @@ public class ServerController : MonoBehaviour {
 
 	private void OnDisconectionHandler(ARWObject obj){
 		Debug.Log("Disconnection!");
+	}
+
+	private void OnApplicationQuit(){
+		server.Disconnect();
 	}
 }
