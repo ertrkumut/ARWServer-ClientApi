@@ -49,6 +49,7 @@ namespace ARWServer_UnityApi
 
 		public void AddUser(User u){
 			Debug.Log(this.userList.Length + " : " + this.GetUserCount());
+			u.lastJoinedRoom = this;
 			this.userList[this.GetUserCount()] = u;
 		}
 	}
