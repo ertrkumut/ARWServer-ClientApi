@@ -11,7 +11,7 @@ public class ServerController : MonoBehaviour {
 		server = new ARWServer();
 		server.Init();
 
-		server.host = "127.0.0.1";
+		server.host = "192.168.1.101";
 		server.tcpPort = 8081;
 
 		server.AddEventHandler(ARWEvents.CONNECTION, OnConnectionHandler);
