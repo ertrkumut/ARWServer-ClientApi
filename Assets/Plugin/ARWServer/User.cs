@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace ARWServer_UnityApi
 {
@@ -10,6 +11,8 @@ namespace ARWServer_UnityApi
 		public bool isMe;
 
 		public Room lastJoinedRoom;
+
+		public GameObject character;
 
 		public User(){
 		}
@@ -27,6 +30,11 @@ namespace ARWServer_UnityApi
 			this.name = name;
 			this.id = id;
 			this.isMe = isMe;
+		}
+
+		public static void SpawnUser(Vector3 pos, User user){
+			GameObject userGameObject = MonoBehaviour.Instantiate(Resources.Load<GameObject>("PlayerObj"), pos, Quaternion.identity) as GameObject;
+			user.character = userGameObject;
 		}
 	}
 }

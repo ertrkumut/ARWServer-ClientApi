@@ -8,13 +8,16 @@ namespace ARWServer_UnityApi
 	{
 		public string tag;
 		public string name;
+		public int id;
+
 		private User[] userList;
 
 		public Room(SpecialEventParam e){
 			try{
 				this.name = e.GetString ("RoomName");
 				this.tag = e.GetString ("RoomTag");
-
+				this.id = e.GetInt("RoomId");
+				
 				userList = new User[e.GetInt ("RoomCappacity")];
 				string[] userArray = e.GetString("Users").Split(new string[] {"''"}, StringSplitOptions.None);
 				for(int ii = 0; ii< userArray.Length; ii++){
@@ -48,7 +51,7 @@ namespace ARWServer_UnityApi
 		}
 
 		public void AddUser(User u){
-			Debug.Log(this.userList.Length + " : " + this.GetUserCount());
+			// Debug.Log(this.userList.Length + " : " + this.GetUserCount());
 			u.lastJoinedRoom = this;
 			this.userList[this.GetUserCount()] = u;
 		}

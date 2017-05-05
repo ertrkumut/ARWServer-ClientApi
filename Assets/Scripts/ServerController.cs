@@ -11,7 +11,8 @@ public class ServerController : MonoBehaviour {
 		server = new ARWServer();
 		server.Init();
 
-		server.host = "192.168.1.101";
+		// server.host = "192.168.1.101";
+		server.host = "127.0.0.1";
 		server.tcpPort = 8081;
 
 		server.AddEventHandler(ARWEvents.CONNECTION, OnConnectionHandler);
@@ -21,6 +22,7 @@ public class ServerController : MonoBehaviour {
 		server.AddEventHandler(ARWEvents.ROOM_JOIN, RoomJoinSuccess);
 		server.AddEventHandler(ARWEvents.USER_ENTER_ROOM, UserEnterRoom);
 
+		server.AddExtensionRequest("IamReady", IamReadyHandler);
 		server.Connect();
 	}
 
@@ -36,14 +38,17 @@ public class ServerController : MonoBehaviour {
 		}
 		
 		Debug.Log("Connection Success");
-		server.SendLoginRequest("deniz", new ARWObject());
+		server.SendLoginRequest("umut", new ARWObject());
 	}
 
 	private void OnLoginHandler(ARWObject obj){
 		User user = obj.GetUser();
 		Debug.Log(user.name + " : " + user.id + " : " + user.isMe);
 
-		server.SendJoin_AnyRoomRequest("GameRoom", null);
+		ARWObject findRoomRequest = new ARWObject();
+		findRoomRequest.PutString("roomTag", "GameRoom");
+
+		server.SendExtensionRequest("FindRoom", findRoomRequest);
 	}
 
 	private void OnLoginError(ARWObject obj){
@@ -53,11 +58,18 @@ public class ServerController : MonoBehaviour {
 	private void RoomJoinSuccess(ARWObject obj){
 		Room currentRoom = obj.GetRoom();
 		Debug.Log("Join Room : " + currentRoom.name + " User Count : " + currentRoom.GetUserList().Length);
+
+		server.SendExtensionRequest("IamReady", new ARWObject(), true);
 	}
 	
 	private void UserEnterRoom(ARWObject obj){
 		Debug.Log("User Enter Room = " + obj.eventParams.GetString("userName") + " ID = " + obj.eventParams.GetInt("userId"));
 	}
+
+	private void IamReadyHandler(ARWObject obj){
+
+	}
+
 
 	private void OnDisconectionHandler(ARWObject obj){
 		Debug.Log("Disconnection!");
