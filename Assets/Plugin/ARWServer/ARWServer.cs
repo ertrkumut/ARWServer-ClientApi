@@ -35,9 +35,20 @@ namespace ARWServer_UnityApi
 
 		private string wrongData = string.Empty;
 
+		private DateTime _serverTime;
+		public DateTime serverTime{
+			set{	_serverTime = value; }
+			get{
+				TimeSpan different = DateTime.Now - firstDateTime;
+				return _serverTime.Add(different);
+			}
+		}
+		private DateTime firstDateTime;
+
 		public void Connect(){
 			client = new TcpClient();
 			try{
+				this.firstDateTime = DateTime.Now;
 				client.Connect(host, tcpPort);
 				ARWObject newObj = new ARWObject ();
 				newObj.SetRequestName (ARWServer_CMD.Connection_Success);
@@ -186,6 +197,13 @@ namespace ARWServer_UnityApi
 			this.client.Close ();
 			if (ARWEvents.DISCONNECTION.handler != null)
 				ARWEvents.DISCONNECTION.handler (new ARWObject ());
+		}
+
+		public void SetServerTime(DateTime firstDateTime){
+			TimeSpan requestDelay = DateTime.Now - this.firstDateTime;
+			Debug.Log("Request Delay : " + requestDelay.Seconds + " : " + requestDelay.Milliseconds);
+			firstDateTime.AddMilliseconds(requestDelay.Milliseconds);
+			this.firstDateTime = firstDateTime;
 		}
 	}
 }

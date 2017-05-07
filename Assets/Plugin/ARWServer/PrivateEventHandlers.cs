@@ -7,6 +7,9 @@ namespace ARWServer_UnityApi
 	public class PrivateEventHandlers
 	{
 		public void P_Connection(ARWServer server, ARWObject obj){
+			DateTime t = DateTime.Parse(obj.GetString("serverTime"));
+			server.SetServerTime(t);
+			
 			if (obj.GetString ("error") == "")
 				server.isConnected = true;
 

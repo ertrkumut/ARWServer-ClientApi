@@ -23,8 +23,8 @@ public class Controller : MonoBehaviour {
 
 				ARWObject obj = new ARWObject();
 				obj.PutFloat("vertical", tempVertical);
-				obj.PutInt("millisecond", System.DateTime.Now.Millisecond);
-				obj.PutInt("second", System.DateTime.Now.Second);
+				obj.PutInt("millisecond", ServerController.instanse.server.serverTime.Millisecond);
+				obj.PutInt("second", ServerController.instanse.server.serverTime.Second);
 				obj.PutFloat("posX", this.transform.position.x);
 				obj.PutFloat("posZ", this.transform.position.z);
 				ServerController.instanse.server.SendExtensionRequest("VerticalUpdate", obj, true, true);
@@ -35,8 +35,8 @@ public class Controller : MonoBehaviour {
 
 				ARWObject obj = new ARWObject();
 				obj.PutFloat("horizontal", tempHorizontal);
-				obj.PutInt("millisecond", System.DateTime.Now.Millisecond);
-				obj.PutInt("second", System.DateTime.Now.Second);
+				obj.PutInt("millisecond", ServerController.instanse.server.serverTime.Millisecond);
+				obj.PutInt("second", ServerController.instanse.server.serverTime.Second);
 				obj.PutFloat("rotX", this.transform.eulerAngles.x);
 				obj.PutFloat("rotY", this.transform.eulerAngles.y);
 				obj.PutFloat("rotZ", this.transform.eulerAngles.z);
