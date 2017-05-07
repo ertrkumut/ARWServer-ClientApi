@@ -6,7 +6,6 @@ ARWServer_UnityApi/bin
 ARWServer_UnityApi/obj
 ARWServer_UnityApi/Properties
 Library/
-*.meta
 *.sublime-project
 *.exe
 Temp/

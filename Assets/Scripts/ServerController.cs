@@ -52,12 +52,14 @@ public class ServerController : MonoBehaviour {
 
 		int differenceSecond = System.DateTime.Now.Second - requestSecond;
 		int differenceMillisecond = System.DateTime.Now.Millisecond - requestMillisecond;
+		differenceMillisecond = Mathf.Abs(differenceMillisecond);
 
 		Vector3 requestPos = new Vector3(obj.GetFloat("posX"), 0, obj.GetFloat("posZ"));
-
+		Debug.Log(requestPos + " : " + differenceMillisecond);
 		User user = server.me.lastJoinedRoom.GetUserList().Where(a=>a.id == userID).FirstOrDefault();
 		if(user != null){
-			user.character.transform.position = requestPos * differenceMillisecond * value;
+			user.character.transform.position = requestPos;
+			user.character.transform.Translate(user.character.transform.TransformDirection(Vector3.forward) * value * differenceMillisecond * 0.001f);
 			user.character.GetComponent<Controller>().vertical = value;
 		}
 	}
