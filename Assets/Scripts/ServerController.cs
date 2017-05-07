@@ -4,6 +4,8 @@ using ARWServer_UnityApi;
 
 public class ServerController : MonoBehaviour {
 
+	public static ServerController instanse;
+
 	public ARWServer server;
 
 	void Start(){
@@ -24,6 +26,8 @@ public class ServerController : MonoBehaviour {
 
 		server.AddExtensionRequest("IamReady", IamReadyHandler);
 		server.Connect();
+
+		instanse = this;
 	}
 
 	void Update(){
@@ -59,11 +63,16 @@ public class ServerController : MonoBehaviour {
 		Room currentRoom = obj.GetRoom();
 		Debug.Log("Join Room : " + currentRoom.name + " User Count : " + currentRoom.GetUserList().Length);
 
-		server.SendExtensionRequest("IamReady", new ARWObject(), true);
+		server.me.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), Vector3.zero, Quaternion.identity);
+		// server.SendExtensionRequest("IamReady", new ARWObject(), true);
 	}
 	
 	private void UserEnterRoom(ARWObject obj){
-		Debug.Log("User Enter Room = " + obj.eventParams.GetString("userName") + " ID = " + obj.eventParams.GetInt("userId"));
+		User newUser = new User(obj.eventParams);
+		Debug.Log("User Enter Room = " + newUser.name);
+		server.me.lastJoinedRoom.AddUser(newUser);
+
+		newUser.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), new Vector3(4, 0, 0), Quaternion.identity);
 	}
 
 	private void IamReadyHandler(ARWObject obj){

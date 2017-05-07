@@ -31,11 +31,6 @@ namespace ARWServer_UnityApi
 			this.id = id;
 			this.isMe = isMe;
 		}
-
-		public static void SpawnUser(Vector3 pos, User user){
-			GameObject userGameObject = MonoBehaviour.Instantiate(Resources.Load<GameObject>("PlayerObj"), pos, Quaternion.identity) as GameObject;
-			user.character = userGameObject;
-		}
 	}
 }
 

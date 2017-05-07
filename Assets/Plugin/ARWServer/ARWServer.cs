@@ -89,8 +89,9 @@ namespace ARWServer_UnityApi
 			for(int ii = 0; ii< requestParts.Length; ii++){
 				string part = requestParts[ii];
 				if(part != ""){
-					Thread t = new Thread(() => HandleRequest(part));
-					t.Start();
+					// Thread t = new Thread(() => HandleRequest(part));
+					// t.Start();
+					HandleRequest(part);
 				}
 			}
 		}
