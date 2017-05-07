@@ -51,8 +51,8 @@ public class ServerController : MonoBehaviour {
 		int requestSecond = obj.GetInt("second");
 		int requestMillisecond = obj.GetInt("millisecond");
 
-		int differenceSecond = System.DateTime.Now.Second - requestSecond;
-		int differenceMillisecond = System.DateTime.Now.Millisecond - requestMillisecond;
+		int differenceSecond = server.serverTime.Second - requestSecond;
+		int differenceMillisecond = server.serverTime.Millisecond - requestMillisecond;
 		differenceMillisecond = Mathf.Abs(differenceMillisecond);
 
 		Vector3 requestPos = new Vector3(obj.GetFloat("posX"), 0, obj.GetFloat("posZ"));
