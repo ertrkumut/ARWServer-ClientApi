@@ -66,6 +66,21 @@ public class ServerController : MonoBehaviour {
 		Room currentRoom = obj.GetRoom();
 		Debug.Log("Join Room : " + currentRoom.name + " User Count : " + currentRoom.GetUserList().Length);
 
+		for(int ii = 0; ii< currentRoom.GetUserCount(); ii++){
+
+			User u = currentRoom.GetUserList()[ii];
+			if(u.isMe != true){
+				Vector3 spawnPoint1;
+				if(server.me.name == "umut")
+					spawnPoint1 = Vector3.zero;
+				else
+					spawnPoint1 = new Vector3(4, 0, 0);
+
+				u.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint1, Quaternion.identity);
+				u.character.name = server.me.name;
+			}
+		}
+
 		Vector3 spawnPoint;
 		if(server.me.name == "umut")
 			spawnPoint = Vector3.zero;
@@ -83,7 +98,7 @@ public class ServerController : MonoBehaviour {
 		server.me.lastJoinedRoom.AddUser(newUser);
 
 		Vector3 spawnPoint;
-		if(server.me.name == "umut")
+		if(newUser.name == "umut")
 			spawnPoint = Vector3.zero;
 		else
 			spawnPoint = new Vector3(4, 0, 0);
