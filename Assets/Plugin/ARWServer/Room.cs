@@ -10,7 +10,7 @@ namespace ARWServer_UnityApi
 		public string name;
 		public int id;
 
-		private User[] userList;
+		private List<User> userList;
 
 		public Room(SpecialEventParam e){
 			try{
@@ -18,42 +18,35 @@ namespace ARWServer_UnityApi
 				this.tag = e.GetString ("RoomTag");
 				this.id = e.GetInt("RoomId");
 				
-				userList = new User[e.GetInt ("RoomCappacity")];
+				userList = new List<User>();
 				string[] userArray = e.GetString("Users").Split(new string[] {"''"}, StringSplitOptions.None);
+
 				for(int ii = 0; ii< userArray.Length; ii++){
 					string[] userDataParts = userArray[ii].Split(new string[]{"^^"}, StringSplitOptions.None);
 					User u = new User(userDataParts[0], int.Parse(userDataParts[1]), bool.Parse(userDataParts[2]));
+					userList.Add(u);
 				}
 			}catch(System.NullReferenceException){
 			}catch(System.IndexOutOfRangeException){}
 		}
 
 		public User[] GetUserList(){
-			int count = 0;
 
-			for(int ii = 0; ii< this.userList.Length; ii++){
-				if(this.userList[ii] != null)
-					count++;
-			}
-
-			User[] tempArray = new User[count];			int tempCount = 0;
-			for(int ii = 0; ii< this.userList.Length; ii++){
-				if(this.userList[ii] != null){
-					tempArray[tempCount] = this.userList[ii];
-					tempCount++;
-				}
+			User[] tempArray = new User[this.userList.Count];
+			for(int ii = 0; ii< this.userList.Count; ii++){
+				tempArray[ii] = this.userList[ii];
 			}
 			return tempArray;
 		}
 
 		public int GetUserCount(){
-			return this.GetUserList().Length;
+			return this.userList.Count;
 		}
 
 		public void AddUser(User u){
 			// Debug.Log(this.userList.Length + " : " + this.GetUserCount());
 			u.lastJoinedRoom = this;
-			this.userList[this.GetUserCount()] = u;
+			this.userList.Add(u);
 		}
 	}
 }
