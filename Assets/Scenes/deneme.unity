@@ -274,3 +274,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83a2c34c5ee194e8880071a5ab99efc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  host: 127.0.0.1
+  userName: umut

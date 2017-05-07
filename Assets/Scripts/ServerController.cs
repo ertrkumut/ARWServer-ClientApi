@@ -8,13 +8,16 @@ public class ServerController : MonoBehaviour {
 
 	public ARWServer server;
 
+	public string host;
+	public string userName;
+
 	void Start(){
 
 		server = new ARWServer();
 		server.Init();
 
 		// server.host = "192.168.1.101";
-		server.host = "127.0.0.1";
+		server.host = host;
 		server.tcpPort = 8081;
 
 		server.AddEventHandler(ARWEvents.CONNECTION, OnConnectionHandler);
@@ -42,7 +45,7 @@ public class ServerController : MonoBehaviour {
 		}
 		
 		Debug.Log("Connection Success");
-		server.SendLoginRequest("umut", new ARWObject());
+		server.SendLoginRequest(userName, new ARWObject());
 	}
 
 	private void OnLoginHandler(ARWObject obj){
@@ -63,7 +66,14 @@ public class ServerController : MonoBehaviour {
 		Room currentRoom = obj.GetRoom();
 		Debug.Log("Join Room : " + currentRoom.name + " User Count : " + currentRoom.GetUserList().Length);
 
-		server.me.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), Vector3.zero, Quaternion.identity);
+		Vector3 spawnPoint;
+		if(server.me.name == "umut")
+			spawnPoint = Vector3.zero;
+		else
+			spawnPoint = new Vector3(4, 0, 0);
+
+		server.me.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint, Quaternion.identity);
+		server.me.character.name = server.me.name;
 		// server.SendExtensionRequest("IamReady", new ARWObject(), true);
 	}
 	
@@ -72,7 +82,14 @@ public class ServerController : MonoBehaviour {
 		Debug.Log("User Enter Room = " + newUser.name);
 		server.me.lastJoinedRoom.AddUser(newUser);
 
-		newUser.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), new Vector3(4, 0, 0), Quaternion.identity);
+		Vector3 spawnPoint;
+		if(server.me.name == "umut")
+			spawnPoint = Vector3.zero;
+		else
+			spawnPoint = new Vector3(4, 0, 0);
+
+		newUser.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint, Quaternion.identity);
+		newUser.character.name = newUser.name;
 	}
 
 	private void IamReadyHandler(ARWObject obj){
