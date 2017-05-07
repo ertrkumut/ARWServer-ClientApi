@@ -44,7 +44,7 @@ public class ServerController : MonoBehaviour {
 	}
 
 	private void VerticalUpdateHandler(ARWObject obj){
-		Debug.Log("Vertical Update");
+		// Debug.Log("Vertical Update");
 		int userID = obj.GetInt("userId");
 		float value = obj.GetFloat("vertical");
 
@@ -69,8 +69,19 @@ public class ServerController : MonoBehaviour {
 		Debug.Log("Horizontal Update");
 		int userID = obj.GetInt("userId");
 		float value = obj.GetFloat("horizontal");
+
+		int requestSecond = obj.GetInt("second");
+		int requestMillisecond = obj.GetInt("millisecond");
+
+		Vector3 eular = new Vector3(obj.GetFloat("rotX"), obj.GetFloat("rotY"), obj.GetFloat("rotZ"));
+		int differenceSecond = server.serverTime.Second - requestSecond;
+		int differenceMillisecond = server.serverTime.Millisecond - requestMillisecond;
+		differenceMillisecond = Mathf.Abs(differenceMillisecond);
+
 		User user = server.me.lastJoinedRoom.GetUserList().Where(a=>a.id == userID).FirstOrDefault();
 		if(user != null){
+			user.character.transform.eulerAngles = eular;
+			user.character.transform.Rotate(user.character.transform.TransformDirection(Vector3.up) * value * 30 * differenceMillisecond * 0.001f);
 			user.character.GetComponent<Controller>().horizontal = value;
 		}
 	}

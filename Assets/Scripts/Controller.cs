@@ -44,7 +44,7 @@ public class Controller : MonoBehaviour {
 			}
 		}else{
 			this.transform.Translate(this.transform.TransformDirection(Vector3.forward) * this.vertical * speed * Time.deltaTime);
-			this.transform.Rotate(this.transform.TransformDirection(Vector3.right) * this.horizontal * speed * Time.deltaTime);
+			this.transform.Rotate(this.transform.TransformDirection(Vector3.up) * this.horizontal * speed * 30 * Time.deltaTime);
 		}
 		
 	}

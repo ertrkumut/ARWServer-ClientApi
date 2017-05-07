@@ -202,8 +202,9 @@ namespace ARWServer_UnityApi
 		public void SetServerTime(DateTime firstDateTime){
 			TimeSpan requestDelay = DateTime.Now - this.firstDateTime;
 			Debug.Log("Request Delay : " + requestDelay.Seconds + " : " + requestDelay.Milliseconds);
-			firstDateTime.AddMilliseconds(requestDelay.Milliseconds);
-			this.firstDateTime = firstDateTime;
+			firstDateTime.AddMilliseconds(Mathf.FloorToInt(requestDelay.Milliseconds * 0.5f));
+			this.serverTime = firstDateTime;
+			Debug.Log("Server Time is : " + this.serverTime.Second + " : " + this.serverTime.Millisecond);
 		}
 	}
 }
