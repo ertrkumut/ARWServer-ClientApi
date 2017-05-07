@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using ARWServer_UnityApi;
+using System.Linq;
 
 public class ServerController : MonoBehaviour {
 
@@ -27,7 +28,10 @@ public class ServerController : MonoBehaviour {
 		server.AddEventHandler(ARWEvents.ROOM_JOIN, RoomJoinSuccess);
 		server.AddEventHandler(ARWEvents.USER_ENTER_ROOM, UserEnterRoom);
 
-		server.AddExtensionRequest("IamReady", IamReadyHandler);
+		// server.AddExtensionRequest("IamReady", IamReadyHandler);
+
+		server.AddExtensionRequest("VerticalUpdate", VerticalUpdateHandler);
+		server.AddExtensionRequest("HorizontalUpdate", HorizontalUpdateHandler);
 		server.Connect();
 
 		instanse = this;
@@ -36,6 +40,27 @@ public class ServerController : MonoBehaviour {
 	void Update(){
 		if(server != null)
 			server.ProcessEvents();
+	}
+
+	private void VerticalUpdateHandler(ARWObject obj){
+		Debug.Log("Vertical Update");
+		int userID = obj.GetInt("userId");
+		float value = obj.GetFloat("vertical");
+
+		User user = server.me.lastJoinedRoom.GetUserList().Where(a=>a.id == userID).FirstOrDefault();
+		if(user != null){
+			user.character.GetComponent<Controller>().vertical = value;
+		}
+	}
+
+	private void HorizontalUpdateHandler(ARWObject obj){
+		Debug.Log("Horizontal Update");
+		int userID = obj.GetInt("userId");
+		float value = obj.GetFloat("horizontal");
+		User user = server.me.lastJoinedRoom.GetUserList().Where(a=>a.id == userID).FirstOrDefault();
+		if(user != null){
+			user.character.GetComponent<Controller>().horizontal = value;
+		}
 	}
 
 	private void OnConnectionHandler(ARWObject obj){
@@ -78,6 +103,7 @@ public class ServerController : MonoBehaviour {
 
 				u.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint1, Quaternion.identity);
 				u.character.name = u.name;
+				u.character.GetComponent<Controller>().user = u;
 			}
 		}
 
@@ -89,6 +115,7 @@ public class ServerController : MonoBehaviour {
 
 		server.me.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint, Quaternion.identity);
 		server.me.character.name = server.me.name;
+		server.me.character.GetComponent<Controller>().user = server.me;
 		// server.SendExtensionRequest("IamReady", new ARWObject(), true);
 	}
 	
@@ -105,6 +132,7 @@ public class ServerController : MonoBehaviour {
 
 		newUser.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint, Quaternion.identity);
 		newUser.character.name = newUser.name;
+		newUser.character.GetComponent<Controller>().user = newUser;
 	}
 
 	private void IamReadyHandler(ARWObject obj){

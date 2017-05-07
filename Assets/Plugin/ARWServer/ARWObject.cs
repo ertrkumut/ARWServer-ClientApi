@@ -51,7 +51,7 @@ namespace ARWServer_UnityApi
 			return string.Empty;
 		}
 
-		public float GetInt(string key){
+		public int GetInt(string key){
 			var entry = dataList.Where (a => a.Key == key).Select (a => (KeyValuePair<string,object>?) a).FirstOrDefault ();
 
 			try{
