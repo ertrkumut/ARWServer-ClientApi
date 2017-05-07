@@ -13,7 +13,7 @@ public class ServerController : MonoBehaviour {
 	public string userName;
 
 	void Start(){
-
+		Debug.Log(System.DateTime.Now);
 		server = new ARWServer();
 		server.Init();
 
@@ -47,8 +47,17 @@ public class ServerController : MonoBehaviour {
 		int userID = obj.GetInt("userId");
 		float value = obj.GetFloat("vertical");
 
+		int requestSecond = obj.GetInt("second");
+		int requestMillisecond = obj.GetInt("millisecond");
+
+		int differenceSecond = System.DateTime.Now.Second - requestSecond;
+		int differenceMillisecond = System.DateTime.Now.Millisecond - requestMillisecond;
+
+		Vector3 requestPos = new Vector3(obj.GetFloat("posX"), 0, obj.GetFloat("posZ"));
+
 		User user = server.me.lastJoinedRoom.GetUserList().Where(a=>a.id == userID).FirstOrDefault();
 		if(user != null){
+			user.character.transform.position = requestPos * differenceMillisecond * value;
 			user.character.GetComponent<Controller>().vertical = value;
 		}
 	}
