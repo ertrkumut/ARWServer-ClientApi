@@ -67,17 +67,17 @@ public class ServerController : MonoBehaviour {
 		Debug.Log("Join Room : " + currentRoom.name + " User Count : " + currentRoom.GetUserList().Length);
 
 		for(int ii = 0; ii< currentRoom.GetUserCount(); ii++){
-
 			User u = currentRoom.GetUserList()[ii];
-			if(u.isMe != true){
+			
+			if(u != server.me){
 				Vector3 spawnPoint1;
-				if(server.me.name == "umut")
+				if(u.name == "umut")
 					spawnPoint1 = Vector3.zero;
 				else
 					spawnPoint1 = new Vector3(4, 0, 0);
 
 				u.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint1, Quaternion.identity);
-				u.character.name = server.me.name;
+				u.character.name = u.name;
 			}
 		}
 
