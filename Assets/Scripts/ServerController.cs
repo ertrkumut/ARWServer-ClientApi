@@ -13,7 +13,7 @@ public class ServerController : MonoBehaviour {
 	public string userName;
 
 	void Start(){
-		Debug.Log(System.DateTime.Now);
+
 		server = new ARWServer();
 		server.Init();
 

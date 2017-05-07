@@ -79,7 +79,7 @@ namespace ARWServer_UnityApi
 			string data = System.Text.Encoding.UTF8.GetString (bytes).Replace("\0", null).Replace("\"",null);
 
 			ARWObject newObj = new ARWObject ();
-			string[] dataParts = data.Split ('.');
+			string[] dataParts = data.Split ('~');
 			if (dataParts.Length == 3) {
 				newObj.requestName = dataParts [0];
 
@@ -110,7 +110,7 @@ namespace ARWServer_UnityApi
 			// string data = System.Text.Encoding.UTF8.GetString (bytes).Replace("\0", null).Replace("\"",null);
 
 			ARWObject newObj = new ARWObject ();
-			string[] dataParts = data.Split ('.');
+			string[] dataParts = data.Split ('~');
 			if (dataParts.Length == 3) {
 				newObj.requestName = dataParts [0];
 
@@ -130,13 +130,13 @@ namespace ARWServer_UnityApi
 		public byte[] Compress(){
 			string data = String.Empty;
 
-			data += this.requestName + ".";
+			data += this.requestName + "~";
 			foreach (KeyValuePair<string, object> p in dataList) {
 				data += p.Key + "#" + p.Value + "_";
 			}
 			data = data.TrimEnd ('_');
 
-			data += "." + eventParams.Compress ();
+			data += "~" + eventParams.Compress ();
 
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes (data);
 			return bytes;
