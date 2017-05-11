@@ -56,7 +56,8 @@ namespace ARWServer_UnityApi
 			ROOM_JOIN_ERROR 			= new ARWEvent ();
 
 			USER_ENTER_ROOM 			= new ARWEvent (ARWServer_CMD.User_Enter_Room);
-
+			USER_ENTER_ROOM.p_handler	= _privateEventHandlers.P_User_Enter_Room;
+			
 			USER_EXIT_ROOM 				= new ARWEvent (ARWServer_CMD.User_Exit_Room);
 
 			allEvents.Add (CONNECTION);

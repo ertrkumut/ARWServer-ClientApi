@@ -143,10 +143,11 @@ public class ServerController : MonoBehaviour {
 	}
 	
 	private void UserEnterRoom(ARWObject obj){
-		User newUser = new User(obj.eventParams);
-		Debug.Log("User Enter Room = " + newUser.name);
-		server.me.lastJoinedRoom.AddUser(newUser);
-
+		// User newUser = new User(obj.eventParams);
+		// Debug.Log("User Enter Room = " + newUser.name);
+		// server.me.lastJoinedRoom.AddUser(newUser);
+		User newUser = obj.GetUser();
+		
 		Vector3 spawnPoint;
 		if(newUser.name == "umut")
 			spawnPoint = Vector3.zero;

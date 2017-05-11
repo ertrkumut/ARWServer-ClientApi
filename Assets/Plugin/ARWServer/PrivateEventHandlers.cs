@@ -58,6 +58,22 @@ namespace ARWServer_UnityApi
 			}
 		}
 
+		public void P_User_Enter_Room(ARWServer server, ARWObject obj){
+			User joinedUser = new User(obj.eventParams);
+
+			Room currentRoom = ARWServer.allRooms.Where(a=>a.name == obj.eventParams.GetString("RoomName")).FirstOrDefault();
+			try{
+				currentRoom.AddUser(joinedUser);
+			}catch(NullReferenceException){
+				Debug.LogError("Room not exist : " + obj.eventParams.GetString("RoomName"));
+				return;
+			}
+
+			if(ARWEvents.USER_ENTER_ROOM.handler != null){
+				ARWEvents.USER_ENTER_ROOM.handler(obj);
+			}
+		}
+
 		public void P_Extension_Handler(ARWServer server, ARWObject obj){
 			string cmd = obj.eventParams.GetString("cmd");
 
