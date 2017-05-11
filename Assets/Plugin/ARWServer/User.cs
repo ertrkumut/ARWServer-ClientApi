@@ -13,7 +13,7 @@ namespace ARWServer_UnityApi
 		public Room lastJoinedRoom;
 
 		public GameObject character;
-
+		
 		public User(){
 		}
 		

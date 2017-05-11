@@ -10,13 +10,17 @@ public class Controller : MonoBehaviour {
 	private float tempVertical = 0, tempHorizontal = 0;
 	public float vertical, horizontal;
 
+	public GameObject body;
+
 	public User user;
 
 	void Update () {
-	
+		if(this.user == null)
+			return;
+
 		if(this.user.isMe){
 			this.transform.Translate(this.transform.TransformDirection(Vector3.forward) * Input.GetAxisRaw("Vertical") * speed * Time.deltaTime);
-			this.transform.Rotate(this.transform.TransformDirection(Vector3.up) * Input.GetAxisRaw("Horizontal") * speed * 30 * Time.deltaTime);
+			this.transform.Rotate(new Vector3(0,0,1) * Input.GetAxisRaw("Horizontal") * speed * 100 * Time.deltaTime);
 
 			if(tempVertical != Input.GetAxisRaw("Vertical")){
 				tempVertical = Input.GetAxisRaw("Vertical");
@@ -42,9 +46,10 @@ public class Controller : MonoBehaviour {
 				obj.PutFloat("rotZ", this.transform.eulerAngles.z);
 				ServerController.instanse.server.SendExtensionRequest("HorizontalUpdate", obj, true, true);
 			}
-		}else{
+		}else{	
+			this.body.transform.position = new Vector3(this.transform.position.x, this.body.transform.position.y, this.transform.position.z);
 			this.transform.Translate(this.transform.TransformDirection(Vector3.forward) * this.vertical * speed * Time.deltaTime);
-			this.transform.Rotate(this.transform.TransformDirection(Vector3.up) * this.horizontal * speed * 30 * Time.deltaTime);
+			body.transform.Rotate(Vector3.right * speed * 35 * vertical * Time.deltaTime);
 		}
 		
 	}

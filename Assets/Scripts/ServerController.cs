@@ -125,6 +125,7 @@ public class ServerController : MonoBehaviour {
 					spawnPoint1 = new Vector3(4, 0, 0);
 
 				u.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint1, Quaternion.identity);
+				u.character.GetComponent<Controller>().body.transform.parent = null;
 				u.character.name = u.name;
 				u.character.GetComponent<Controller>().user = u;
 			}
@@ -136,18 +137,15 @@ public class ServerController : MonoBehaviour {
 		else
 			spawnPoint = new Vector3(4, 0, 0);
 
-		server.me.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint, Quaternion.identity);
+		server.me.character = Camera.main.transform.parent.gameObject;		Camera.main.transform.parent.position = spawnPoint;
 		server.me.character.name = server.me.name;
-		server.me.character.GetComponent<Controller>().user = server.me;
+		server.me.character.transform.GetComponent<Controller>().user = server.me;
 		// server.SendExtensionRequest("IamReady", new ARWObject(), true);
 	}
 	
 	private void UserEnterRoom(ARWObject obj){
-		// User newUser = new User(obj.eventParams);
-		// Debug.Log("User Enter Room = " + newUser.name);
-		// server.me.lastJoinedRoom.AddUser(newUser);
 		User newUser = obj.GetUser();
-		
+
 		Vector3 spawnPoint;
 		if(newUser.name == "umut")
 			spawnPoint = Vector3.zero;
@@ -155,14 +153,11 @@ public class ServerController : MonoBehaviour {
 			spawnPoint = new Vector3(4, 0, 0);
 
 		newUser.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint, Quaternion.identity);
+		newUser.character.GetComponent<Controller>().body = newUser.character.transform.FindChild("body").gameObject;
+		newUser.character.transform.FindChild("body").SetParent(null);
 		newUser.character.name = newUser.name;
 		newUser.character.GetComponent<Controller>().user = newUser;
 	}
-
-	private void IamReadyHandler(ARWObject obj){
-
-	}
-
 
 	private void OnDisconectionHandler(ARWObject obj){
 		Debug.Log("Disconnection!");
