@@ -19,8 +19,8 @@ public class Controller : MonoBehaviour {
 			return;
 
 		if(this.user.isMe){
-			this.transform.Translate(this.transform.TransformDirection(Vector3.forward) * Input.GetAxisRaw("Vertical") * speed * Time.deltaTime);
-			this.transform.Rotate(new Vector3(0,1,0) * Input.GetAxisRaw("Horizontal") * speed * 100 * Time.deltaTime);
+			this.transform.Translate(Vector3.forward * Input.GetAxisRaw("Vertical") * speed * Time.deltaTime);
+			this.transform.Rotate(Vector3.up * Input.GetAxisRaw("Horizontal") * speed * 70 * Time.deltaTime);
 
 			if(tempVertical != Input.GetAxisRaw("Vertical")){
 				tempVertical = Input.GetAxisRaw("Vertical");
@@ -48,7 +48,7 @@ public class Controller : MonoBehaviour {
 			}
 		}else{	
 			this.body.transform.position = new Vector3(this.transform.position.x, this.body.transform.position.y, this.transform.position.z);
-			this.transform.Translate(this.transform.TransformDirection(Vector3.forward) * this.vertical * speed * Time.deltaTime);
+			this.transform.Translate(Vector3.forward * this.vertical * speed * Time.deltaTime);
 			this.transform.Rotate(new Vector3(0,1,0) * this.horizontal * speed * 100 * Time.deltaTime);
 			body.transform.Rotate(Vector3.right * speed * 100 * vertical * Time.deltaTime);
 		}
