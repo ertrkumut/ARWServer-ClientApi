@@ -50,7 +50,7 @@ public class Controller : MonoBehaviour {
 			this.body.transform.position = new Vector3(this.transform.position.x, this.body.transform.position.y, this.transform.position.z);
 			this.transform.Translate(Vector3.forward * this.vertical * speed * Time.deltaTime);
 			this.transform.Rotate(new Vector3(0,1,0) * this.horizontal * speed * 100 * Time.deltaTime);
-			body.transform.Rotate(Vector3.right * speed * 100 * vertical * Time.deltaTime);
+			body.transform.Rotate(this.transform.TransformDirection(Vector3.right) * speed * 100 * vertical * Time.deltaTime);
 		}
 		
 	}
