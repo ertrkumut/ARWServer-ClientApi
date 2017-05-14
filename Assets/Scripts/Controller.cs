@@ -20,7 +20,7 @@ public class Controller : MonoBehaviour {
 
 		if(this.user.isMe){
 			this.transform.Translate(Vector3.forward * Input.GetAxisRaw("Vertical") * speed * Time.deltaTime);
-			this.transform.Rotate(Vector3.up * Input.GetAxisRaw("Horizontal") * speed * 70 * Time.deltaTime);
+			this.transform.Rotate(Vector3.up * Input.GetAxisRaw("Horizontal") * speed * 50 * Time.deltaTime);
 
 			if(tempVertical != Input.GetAxisRaw("Vertical")){
 				tempVertical = Input.GetAxisRaw("Vertical");

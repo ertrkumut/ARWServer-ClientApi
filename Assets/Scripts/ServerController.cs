@@ -81,7 +81,7 @@ public class ServerController : MonoBehaviour {
 		User user = server.me.lastJoinedRoom.GetUserList().Where(a=>a.id == userID).FirstOrDefault();
 		if(user != null){
 			user.character.transform.eulerAngles = eular;
-			user.character.transform.Rotate(new Vector3(0,1,0) * value * 100 * differenceMillisecond * 0.001f);
+			user.character.transform.Rotate(new Vector3(0,1,0) * value * 50 * differenceMillisecond * 0.001f);
 			user.character.GetComponent<Controller>().horizontal = value;
 		}
 	}
