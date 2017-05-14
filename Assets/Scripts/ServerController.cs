@@ -81,7 +81,7 @@ public class ServerController : MonoBehaviour {
 		User user = server.me.lastJoinedRoom.GetUserList().Where(a=>a.id == userID).FirstOrDefault();
 		if(user != null){
 			user.character.transform.eulerAngles = eular;
-			user.character.transform.Rotate(user.character.transform.TransformDirection(Vector3.up) * value * 30 * differenceMillisecond * 0.001f);
+			user.character.transform.Rotate(new Vector3(0,1,0) * value * 100 * differenceMillisecond * 0.001f);
 			user.character.GetComponent<Controller>().horizontal = value;
 		}
 	}
@@ -153,8 +153,7 @@ public class ServerController : MonoBehaviour {
 			spawnPoint = new Vector3(4, 0, 0);
 
 		newUser.character = (GameObject)Instantiate(Resources.Load<GameObject>("Player"), spawnPoint, Quaternion.identity);
-		newUser.character.GetComponent<Controller>().body = newUser.character.transform.FindChild("body").gameObject;
-		newUser.character.transform.FindChild("body").SetParent(null);
+		newUser.character.GetComponent<Controller>().body.transform.parent = null;
 		newUser.character.name = newUser.name;
 		newUser.character.GetComponent<Controller>().user = newUser;
 	}
