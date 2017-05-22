@@ -46,6 +46,9 @@ public class Controller : MonoBehaviour {
 				obj.PutFloat("rotZ", this.transform.eulerAngles.z);
 				ServerController.instanse.server.SendExtensionRequest("HorizontalUpdate", obj, true, true);
 			}
+
+			this.body.transform.position = new Vector3(this.transform.position.x, this.body.transform.position.y, this.transform.position.z);
+			body.transform.Rotate(this.transform.TransformDirection(Vector3.right) * speed * 100 * Input.GetAxisRaw("Vertical") * Time.deltaTime);
 		}else{	
 			this.body.transform.position = new Vector3(this.transform.position.x, this.body.transform.position.y, this.transform.position.z);
 			this.transform.Translate(Vector3.forward * this.vertical * speed * Time.deltaTime);
