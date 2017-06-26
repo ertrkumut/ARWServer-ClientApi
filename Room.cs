@@ -23,7 +23,14 @@ namespace ARWServer_UnityApi
 
 				for(int ii = 0; ii< userArray.Length; ii++){
 					string[] userDataParts = userArray[ii].Split(new string[]{"^^"}, StringSplitOptions.None);
-					User u = new User(userDataParts[0], int.Parse(userDataParts[1]), bool.Parse(userDataParts[2]));
+
+					SpecialEventParam userParams = new SpecialEventParam();
+					userParams.PutVariable("userName", userDataParts[0]);
+					userParams.PutVariable("userId", userDataParts[1]);
+					userParams.PutVariable("isMe", false);
+					userParams.PutVariable("userVariables", userDataParts[2]);
+
+					User u = new User(userParams);
 					userList.Add(u);
 				}
 			}catch(System.NullReferenceException){
