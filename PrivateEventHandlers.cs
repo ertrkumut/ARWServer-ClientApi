@@ -37,17 +37,17 @@ namespace ARWServer_UnityApi
 				ARWEvents.LOGIN.handler (obj);
 		}
 
-		public void P_Room_Create(ARWServer server, ARWObject obj){
+		public Room P_Room_Create(ARWServer server, ARWObject obj){
 			Room newRoom = new Room(obj.eventParams);
 			ARWServer.allRooms.Add (newRoom);
 
 			Console.WriteLine ("Room Create : " + newRoom.name + " : " + newRoom.tag + " : " + newRoom.GetUserList().Length);
+			return newRoom;
 		}
 
 		public void P_Join_Room(ARWServer server, ARWObject obj){
-			P_Room_Create(server, obj);
+			Room currentRoom = P_Room_Create(server, obj);
 
-			Room currentRoom = obj.GetRoom();
 			User currentUser = server.me;
 			server.me.lastJoinedRoom = currentRoom;
 
