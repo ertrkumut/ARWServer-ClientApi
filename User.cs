@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace ARWServer_UnityApi
 {
@@ -11,6 +12,8 @@ namespace ARWServer_UnityApi
 
 		public Room lastJoinedRoom;
 
+		public GameObject character;
+		
 		public User(){
 		}
 		

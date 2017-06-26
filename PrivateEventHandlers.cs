@@ -7,6 +7,9 @@ namespace ARWServer_UnityApi
 	public class PrivateEventHandlers
 	{
 		public void P_Connection(ARWServer server, ARWObject obj){
+			DateTime t = DateTime.Parse(obj.GetString("serverTime"));
+			server.SetServerTime(t);
+			
 			if (obj.GetString ("error") == "")
 				server.isConnected = true;
 
@@ -52,6 +55,22 @@ namespace ARWServer_UnityApi
 
 			if (ARWEvents.ROOM_JOIN.handler != null) {
 				ARWEvents.ROOM_JOIN.handler (obj);
+			}
+		}
+
+		public void P_User_Enter_Room(ARWServer server, ARWObject obj){
+			User joinedUser = new User(obj.eventParams);
+
+			Room currentRoom = ARWServer.allRooms.Where(a=>a.name == obj.eventParams.GetString("RoomName")).FirstOrDefault();
+			try{
+				currentRoom.AddUser(joinedUser);
+			}catch(NullReferenceException){
+				Debug.LogError("Room not exist : " + obj.eventParams.GetString("RoomName"));
+				return;
+			}
+
+			if(ARWEvents.USER_ENTER_ROOM.handler != null){
+				ARWEvents.USER_ENTER_ROOM.handler(obj);
 			}
 		}
 

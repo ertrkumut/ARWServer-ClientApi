@@ -35,9 +35,20 @@ namespace ARWServer_UnityApi
 
 		private string wrongData = string.Empty;
 
+		private DateTime _serverTime;
+		public DateTime serverTime{
+			set{	_serverTime = value; }
+			get{
+				TimeSpan different = DateTime.Now - firstDateTime;
+				return _serverTime.Add(different);
+			}
+		}
+		private DateTime firstDateTime;
+
 		public void Connect(){
 			client = new TcpClient();
 			try{
+				this.firstDateTime = DateTime.Now;
 				client.Connect(host, tcpPort);
 				ARWObject newObj = new ARWObject ();
 				newObj.SetRequestName (ARWServer_CMD.Connection_Success);
@@ -89,8 +100,9 @@ namespace ARWServer_UnityApi
 			for(int ii = 0; ii< requestParts.Length; ii++){
 				string part = requestParts[ii];
 				if(part != ""){
-					Thread t = new Thread(() => HandleRequest(part));
-					t.Start();
+					// Thread t = new Thread(() => HandleRequest(part));
+					// t.Start();
+					HandleRequest(part);
 				}
 			}
 		}
@@ -119,16 +131,6 @@ namespace ARWServer_UnityApi
 				}
 			}
 		}
-		public void SendJoin_AnyRoomRequest(string roomTag, ARWObject arwObj){
-			if (arwObj == null)
-				arwObj = new ARWObject ();
-
-			arwObj.SetRequestName (ARWServer_CMD.Any_Join_Room);
-			arwObj.eventParams.PutVariable ("roomTag", roomTag);
-
-			Thread t = new Thread(() => SendReqeust(arwObj));
-			t.Start();
-		}
 
 		public void SendLoginRequest(string userName, ARWObject arwObject){
 			ThreadStart threadFunc = new ThreadStart(delegate() {
@@ -146,18 +148,25 @@ namespace ARWServer_UnityApi
 			loginThread.Start ();
 		}
 
-		public void SendExtensionRequest(string cmd, ARWObject arwObj, bool room = false, bool isTcp = false){
+		public void SendExtensionRequest(string cmd, ARWObject arwObj, bool room = false, bool isTcp = true){
 			
 			if(arwObj == null)
 				arwObj = new ARWObject();
 				
 			arwObj.eventParams.PutVariable("cmd", cmd);
 			arwObj.eventParams.PutVariable("isRoomRequest", room);
+
+			if(room){
+				arwObj.eventParams.PutVariable("roomId", me.lastJoinedRoom.id);
+			}
+			
 			arwObj.SetRequestName(ARWServer_CMD.Extension_Request);
 
 			Thread t = new Thread(() => SendReqeust(arwObj));
 			t.Start();
 		}
+
+
 
 		public void AddExtensionRequest(string cmd, EventHandler handler){
 
@@ -188,6 +197,14 @@ namespace ARWServer_UnityApi
 			this.client.Close ();
 			if (ARWEvents.DISCONNECTION.handler != null)
 				ARWEvents.DISCONNECTION.handler (new ARWObject ());
+		}
+
+		public void SetServerTime(DateTime firstDateTime){
+			TimeSpan requestDelay = DateTime.Now - this.firstDateTime;
+			Debug.Log("Request Delay : " + requestDelay.Seconds + " : " + requestDelay.Milliseconds);
+			firstDateTime.Add(requestDelay);
+			this.serverTime = firstDateTime;
+			Debug.Log("Server Time is : " + this.serverTime.Second + " : " + this.serverTime.Millisecond);
 		}
 	}
 }
