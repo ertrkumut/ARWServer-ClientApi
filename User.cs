@@ -24,6 +24,14 @@ namespace ARWServer_UnityApi
 			this.isMe = bool.Parse (e.GetString ("isMe"));
 			this.lastJoinedRoom = null;
 
+			string userVariables = e.GetString("userVariables");
+			string[] userVars = userVariables.Split('§');
+
+			foreach(string userVar in userVars){
+				string[] variableParts = userVar.Split('½');
+				this.userVariables.Add(new UserVariable(variableParts[0], variableParts[1]));
+			}
+
 			UserManager.allUserInGame.Add (this);
 		}
 
