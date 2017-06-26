@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ARWServer_UnityApi
@@ -11,9 +13,8 @@ namespace ARWServer_UnityApi
 		public bool isMe;
 
 		public Room lastJoinedRoom;
+		private List<UserVariable> userVariables;
 
-		public GameObject character;
-		
 		public User(){
 		}
 		
@@ -30,6 +31,11 @@ namespace ARWServer_UnityApi
 			this.name = name;
 			this.id = id;
 			this.isMe = isMe;
+		}
+
+		public UserVariable GetUserVariables(string key){
+			UserVariable currentVariable = this.userVariables.Where(a=>a.key == key).FirstOrDefault();
+			return currentVariable;
 		}
 	}
 }
