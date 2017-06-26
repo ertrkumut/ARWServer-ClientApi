@@ -19,11 +19,11 @@ namespace ARWServer_UnityApi{
 			return int.Parse(this.value.ToString());
 		}
 
-		public int GetFloatValue(){
+		public float GetFloatValue(){
 			return float.Parse(this.value.ToString());
 		}
 
-		public int GetBoolValue(){
+		public bool GetBoolValue(){
 			return bool.Parse(this.value.ToString());
 		}
 	}	
