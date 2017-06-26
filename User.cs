@@ -27,12 +27,6 @@ namespace ARWServer_UnityApi
 			UserManager.allUserInGame.Add (this);
 		}
 
-		public User(string name, int id, bool isMe){
-			this.name = name;
-			this.id = id;
-			this.isMe = isMe;
-		}
-
 		public UserVariable GetUserVariables(string key){
 			UserVariable currentVariable = this.userVariables.Where(a=>a.key == key).FirstOrDefault();
 			return currentVariable;
