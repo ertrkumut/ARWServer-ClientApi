@@ -74,6 +74,10 @@ namespace ARWServer_UnityApi
 			}
 		}
 
+		public void P_User_Variable_Update(ARWServer server, ARWObject obj){
+			
+		}
+
 		public void P_Extension_Handler(ARWServer server, ARWObject obj){
 			string cmd = obj.eventParams.GetString("cmd");
 
