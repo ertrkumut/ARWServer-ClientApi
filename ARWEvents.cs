@@ -19,11 +19,13 @@ namespace ARWServer_UnityApi
 		public static ARWEvent ROOM_JOIN_ERROR;
 		public static ARWEvent USER_ENTER_ROOM;
 		public static ARWEvent USER_EXIT_ROOM;
+		public static ARWEvent USER_VARIABLE_UPDATE;
 #endregion
 		
 #region Private Events
 		private static ARWEvent EXTENSION_REQUEST;
 #endregion
+
 		public static void Init(){
 			PrivateEventHandlers _privateEventHandlers = new PrivateEventHandlers ();
 
@@ -59,6 +61,9 @@ namespace ARWServer_UnityApi
 			USER_ENTER_ROOM.p_handler	= _privateEventHandlers.P_User_Enter_Room;
 			
 			USER_EXIT_ROOM 				= new ARWEvent (ARWServer_CMD.User_Exit_Room);
+
+			USER_VARIABLE_UPDATE = new ARWEvent(ARWServer_CMD.User_Variable_Update);
+			USER_VARIABLE_UPDATE.p_handler = _privateEventHandlers.P_User_Variable_Update;
 
 			allEvents.Add (CONNECTION);
 			allEvents.Add (CONNECTION_LOST);
